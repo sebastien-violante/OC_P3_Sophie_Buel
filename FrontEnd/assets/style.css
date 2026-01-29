@@ -50,18 +50,24 @@ table {
 
 /* main css */
 body {
-	max-width: 1140px;
+	max-width: 1440px;
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+	background-color: #FFFEF8;
 }
+
 header {
+	max-width: 1140px;
 	display: flex;
 	justify-content: space-between;
-	margin: 50px 0
+	margin: 50px auto 0 auto;
 }
+
+
 section {
-	margin: 50px 0
+	margin: 50px auto;
+	max-width: 950px;
 }
 
 h1{
@@ -86,19 +92,32 @@ h2{
 	font-size: 30px;
 	color: #1D6154
 }
+
+nav a:link,
+nav a:visited {
+	text-decoration: none;
+	color: black;
+}
+
 nav ul {
 	display: flex;
-	align-items: center;
 	list-style-type: none;
 
 }
 nav li {
-	padding: 0 10px;
-	font-size: 1.2em;
+	padding: 0 22px;
+	font-size: 16px;
+	line-height: 22px;
+}
+
+nav ul li img {
+	width: 22px;
+	height: 22px;
 }
 
 li:hover {
-	color: #B1663C;
+	font-weight: 700;
+	cursor: pointer;
 }
 
 /******************************* Introduction section */
@@ -106,13 +125,18 @@ li:hover {
 #introduction {
 	display: flex;
 	align-items: center;
+	padding: 90px 95px;
 }
 #introduction figure {
-	flex: 1
+	flex: 1;
+	background-image:url("./images/sophie-bluel.png");
+	background-position: center;
+	background-size: contain;
+	height: 355px;
 }
 #introduction img {
 	display: block;
-	margin: auto;
+	margin-right: 47px;
 	width: 80%;
 }
 
@@ -121,42 +145,51 @@ li:hover {
 }
 #introduction h2 {
 	margin-bottom: 1em;
+	padding-left: 72px;
 }
 
 #introduction p {
 	margin-bottom: 0.5em;
+	padding-left: 72px;
+	color: #3D3D3D;
 }
 
 /******************************* Portfolio section */
 
+#portfolio {
+	padding: 0 95px;
+}
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 1em;
 }
 
+/******************************* Filters section */
+
+
 .filters {
 	display: flex;
 	justify-content: center;
-	margin: 20px 0 50px 0;
+	padding: 30px 0 50px 0;;
 }
 
 .filters button {
 	font-family: 'Syne';
+	font-size: 16px;
 	font-weight: 700;
 	color: #1D6154;
-	background-color: white;
+	background-color: transparent;
 	border: 2px solid #1D6154;
 	border-radius: 60px ;
 	padding: 10px 15px;
-	margin: 0 10px;
+	margin: 0 5px;
 	cursor: pointer;
 	min-width: 100px;
-	transition: background-color 0.3s ease, color 0.3s ease;
+	transition: background-color .7s ease, color .7s ease;
 }
 
-.filters button:hover {
-	color: white;
-	background-color: #1D6154;
+.filter button:hover {
+	cursor: pointer;
 }
 
 .filters button.selected {
@@ -176,22 +209,30 @@ li:hover {
 	width: 100%;
 
 }
+/******************************* Gallery section */
+.gallery figure figcaption {
+	color: #3D3D3D;
+}
 
 /******************************* Contact section */
 #contact {
 	width: 50%;
-margin: auto;
+	max-width: 380px;
+	margin: auto;
 }
 #contact > * {
 	text-align: center;
 
 }
 #contact h2{
-	margin-bottom: 20px;
+	margin-bottom: 10px;
+}
+#contact p {
+	font-size: 16px;
+	color: #3D3D3D;
 }
 #contact form {
 	text-align: left;
-	margin-top:30px;
 	display: flex;
 	flex-direction: column;
 }
@@ -203,27 +244,99 @@ margin: auto;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 #contact label {
-	margin: 2em 0 1em 0;
+	margin: 40px 0 7px 0;
+	color: #3D3D3D;
+	font-weight: 500;
 }
 #contact textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	resize: none;
 }
 
-input[type="submit"]{
+#contact input[type="submit"]{
+	height: 36px;
+	font-size: 14px;
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
 	background-color: #1D6154;
-	margin : 2em auto ;
+	margin : 40px auto 45px auto;
 	width: 180px;
 	text-align: center;
 	border-radius: 60px ;
 }
 
+/******************************* Footer section */
+footer {
+	display: flex;
+	align-items: center;
+	justify-content:right;
+	width: 1440px;
+	height: 60px;
+	background-color: white;
+	width:100%;
+}
+footer nav {
+	margin-right: 107px;
+}
+
+footer nav ul li {
+	font-size: 14px;
+}
+
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
-	margin: 2em
 }
 
+footer nav ul li {
+	font-weight: 300;
+	padding: 0;
+}
+
+/******************************* Login section */
+.login-form {
+	display: flex;
+	flex-direction: column;
+	align-items:center;
+	min-height: calc(100vh - 142px);
+}
+
+.login-form form {
+	display: flex;
+	flex-direction: column;
+	padding: 37px 0 30px 0;
+}
+
+.login-form form label {
+	margin-bottom: 7px;
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.login-form form input {
+	border: none;
+	height: 50px;
+	width: 380px;
+	box-shadow: 0px 4px 14px 0px #00000017;
+	margin-bottom: 30px;
+	padding: 0 10px;
+}
+
+.login-form form button {
+	height: 36px;
+	width: 180px;
+	font-weight: 700;
+	font-size: 14px;
+	margin: auto;
+	border-radius: 60px;
+	border: none;
+	background: #1D6154;
+	color: white;
+	font-family: 'Syne';
+}
+
+.login-form a {
+	color: #3D3D3D;
+}
