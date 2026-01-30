@@ -9,16 +9,17 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script src="./assets/scripts/main.js" type="module" defer></script>
+	<script src="./assets/scripts/authentication.js" defer></script>
+	<script src="./assets/scripts/header.js" defer></script>
 </head>
 <body>
 <header>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
-			<li>projets</li>
-			<li>contact</li>
-			<li>login</li>
+			<li><a href="./index.html">projets</a></li>
+			<li><a href="./index.html#contact">contact</a></li>
+			<li class="loginLogout"></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
@@ -26,6 +27,7 @@
 <main>
 	<section class="login-form">
 		<h2>Log In</h2>
+		<div class="errorMessage"></div>
 		<form>
 			<label for="email">E-mail</label>
 			<input type="email" id="email" name="email">
