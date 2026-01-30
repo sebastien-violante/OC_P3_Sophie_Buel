@@ -2,6 +2,7 @@ console.log('main.js linké !"')
 // import all necessary functions
 import { displayCategories, filterWorks } from './filter.js'
 import { displayWorks } from './works.js'
+import { enableModify } from './enableModify.js'    
 
 function listenButtons() {
     const filterButtons = document.querySelectorAll('.filter-btn')
@@ -17,6 +18,8 @@ async function initPage() {
     const works = JSON.parse(window.localStorage.getItem('allWorks'))
     await filterWorks(0)
     listenButtons()
+    enableModify()
+
 }
 
 initPage()

@@ -9,16 +9,19 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script src="./assets/scripts/main.js" type="module" defer></script>
+	<script src="./assets/scripts/main.js" type="module"></script>
+	<script src="./assets/scripts/header.js" defer></script>
+	<script src="./assets/scripts/enableModify.js" defer></script>
+
 </head>
 <body>
 <header>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
-			<li>projets</li>
-			<li>contact</li>
-			<a href="./login.html"><li>login</li></a>
+			<li><a href="./index.html">projets</a></li>
+			<li><a href="./index.html#contact">contact</a></li>
+			<li class="loginLogout"></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
@@ -35,7 +38,7 @@
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets</h2>
+		<div class="title"></div>
 		<div class="filters">
 			<!-- Les boutons de filtres seront insérés ici par le script main.js -->
 		</div>
