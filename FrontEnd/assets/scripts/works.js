@@ -12,8 +12,8 @@ export async function getAllWorks() {
         const allWorks = await responseAllWorks.json()
         // store works in local storage to avoid other fetch
         window.localStorage.setItem('allWorks', JSON.stringify(allWorks))
-
         return allWorks
+        
     } catch(error) {
         console.error('erreur de requête fetch :',error.message)
     }
@@ -28,6 +28,8 @@ export function displayWorks(works) {
     // Loop through works and create HTML elements
     works.forEach(work => {
     const figureHtml = `<figure><img src="${work.imageUrl}" alt="${work.title}"><figcaption>${work.title}</figcaption></figure>`
+    const modalHtml = `<figure><img class="workPicture" src="${work.imageUrl}" alt="${work.title}"><img id="${work.id}" class="deleteIcon" src="./assets/icons/delete.png"></figure>`
     document.querySelector('.gallery').innerHTML += figureHtml
+    document.querySelector('.galleryModal').innerHTML += modalHtml
 })
 }

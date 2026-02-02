@@ -1,4 +1,4 @@
-console.log('authentication.js linké !')
+console.log('authentication.js charé')
 const errorMessage = document.querySelector('.errorMessage')
 
 async function tryAuthentication(email, password) {
@@ -9,11 +9,13 @@ async function tryAuthentication(email, password) {
             body: JSON.stringify({email:email,password:password})
         })
     const authenticateResponse = await tryAuthenticateResult.json()
-    console.log(tryAuthenticateResult.status)
     if(tryAuthenticateResult.status == "200") {
         const token = authenticateResponse.token
-        console.log(token)
-        return token
+    console.log(token)
+
+        window.localStorage.setItem('token', token)
+
+       return token
     }
 }
 
@@ -35,8 +37,8 @@ form.addEventListener('submit', (event) =>{
 
         const token = tryAuthentication(email, password)
         if(token != null) {
-            window.localStorage.setItem('token', token)
-            window.location.href=('index.html')
+            console.log(token)
+           // window.location.href=('index.html')
         }
 
         } catch(error) {
