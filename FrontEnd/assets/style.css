@@ -245,9 +245,6 @@ footer nav ul li {
 	cursor: pointer;
 	min-width: 100px;
 	transition: background-color .7s ease, color .7s ease;
-}
-
-.filter button:hover {
 	cursor: pointer;
 }
 
@@ -375,4 +372,192 @@ footer nav ul li {
 
 .login-form .errorMessage {
 	color: red;
+}
+
+/******************************* MODAL SECTION */
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.3);
+	align-items: center;
+	justify-content: center;
+}
+
+.modal-wrapper {
+	height: 690px;
+	width: 630px;
+	background:white;
+	border-radius: 10px;
+	position: relative;
+}
+
+.modal-wrapper #addPhotos {
+	margin-top: 60px;
+	margin-bottom: 46px;
+	font-size: 26px;
+	color: black;
+	font-weight: 400;
+	font-family: 'Work Sans';
+}
+.modal-wrapper .galleryModal {
+	display: flex;
+	flex-wrap:wrap;
+	gap:10px;
+	min-height: 405px;
+	padding: 0 105px 48px 105px;
+	border-bottom: 1px solid #B3B3B3;
+}
+
+.modal-wrapper figure {
+	position: relative;
+}
+
+.modal-wrapper .galleryModal .workPicture {
+	width: 76px;
+	height: 103px;
+	margin-bottom: 19px;
+}
+
+.modal-wrapper .galleryModal .deleteIcon {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	width: 17px;
+	height: 17px;
+	z-index: 1;
+	cursor: pointer
+}
+
+.modal-wrapper .addBtnZone {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.modal-wrapper .addBtnZone .btnAddPhoto,
+.modal-wrapper .addBtnZone .btnValidatePhoto
+
+{
+	width: 237px;
+	height: 36px;
+	border-radius: 60px;
+	background-color: #1D6154;
+	color: white;
+	font-weight: 700;
+	margin-bottom: 45px;
+	margin-top: 38px;
+	border: none;
+	cursor: pointer;
+}
+
+.modal-wrapper .closeCross {
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	top: 26px;
+	right: 30px;
+	z-index: 1;
+	cursor: pointer;
+}
+
+.modal-wrapper .stripe-wrapper {
+	position: absolute;
+	left:0;
+	display:flex;
+}
+
+.modal-wrapper  .left-wrapper,
+.modal-wrapper  .right-wrapper {
+	width: 630px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+
+.modal-wrapper .left-wrapper.visible,
+.modal-wrapper .right-wrapper.visible
+ {
+	opacity: 1;
+	visibility: visible;
+
+}
+
+.modal-wrapper .right-wrapper .toLeftArrow {
+	width: 21px;
+	height: 18px;
+	position: absolute;
+	top: 26px;
+	left: 30px;
+}
+
+.modal-wrapper .displayPictureZone {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 7px;
+	border-radius: 3px;
+	background: #E8F1F6;
+	width: 420px;
+	height: 170px;
+	margin: auto;
+}
+
+.modal-wrapper .displayPictureZone .default-picture {
+	height: 76px;
+	width: 76px;
+}
+
+.modal-wrapper .displayPictureZone .choosePictureLabel {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 36px;
+	width: 173px;
+	border-radius: 50px;
+	background-color: #CBD6DC;
+	color: #306685;
+	border: none;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.modal-wrapper .displayPictureZone .choosePictureLabel input {
+	display: none;
+}
+.modal-wrapper .displayPictureZone .imgTypes {
+	font-size: 10px;
+	font-weight: 400;
+}
+
+.modal-wrapper .textualInputs {
+	padding: 0 105px;
+	margin-top: 30px;
+}
+
+.modal-wrapper .textualInputs label {
+	display: block;
+	margin-bottom: 10px;
+	margin-top: 20px;
+	color: #3D3D3D;
+}
+
+.modal-wrapper  input[name="title"],
+.modal-wrapper  select
+{
+	width: 100%;
+	height: 50px;
+	box-shadow: 0px 4px 14px 0px #00000017;
+	border: none;
+	display: block;
+	margin: auto;
+	padding-left: 16px;
+	background: white;
+	box-sizing: border-box;
 }

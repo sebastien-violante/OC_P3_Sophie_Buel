@@ -1,4 +1,4 @@
-import { displayWorks} from "./works.js";
+import { displayWorks, getAllWorks} from "./works.js";
 
 /**
  * Get categories from API
@@ -39,13 +39,16 @@ export async function displayCategories() {
 }
 
 
-export function filterWorks(id) {
-    const works = JSON.parse(window.localStorage.getItem('allWorks'))
+export async function filterWorks(id) {
+
+    //const works = JSON.parse(window.localStorage.getItem('allWorks'))
+    const works = await getAllWorks()
+    console.log(works)
     if(id == 0) {
         displayWorks(works)
     } else {
         const filteredWorks = works.filter(work => work.categoryId == id)
-    displayWorks(filteredWorks)
+        displayWorks(filteredWorks)
     }
     const filterButtons = document.querySelectorAll('.filter-btn')
     filterButtons.forEach(filterButton => {

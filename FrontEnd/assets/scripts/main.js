@@ -1,8 +1,8 @@
-console.log('main.js linké !"')
+console.log('main.js chagé')
 // import all necessary functions
 import { displayCategories, filterWorks } from './filter.js'
-import { displayWorks } from './works.js'
 import { enableModify } from './enableModify.js'    
+import { displayModal } from './modal.js'
 
 function listenButtons() {
     const filterButtons = document.querySelectorAll('.filter-btn')
@@ -19,7 +19,8 @@ async function initPage() {
     await filterWorks(0)
     listenButtons()
     enableModify()
-
+    document.querySelector('.modal').style.display="none"
+    displayModal()
 }
 
 initPage()
