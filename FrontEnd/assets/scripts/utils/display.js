@@ -10,7 +10,7 @@ export function displayWorks(works) {
     // Loop through works and create HTML elements
     works.forEach(work => {
         const figureHtml = `<figure data-id='${work.id}'><img src="${work.imageUrl}" alt="${work.title}"><figcaption>${work.title}</figcaption></figure>`
-        const modalHtml = `<figure data-id='${work.id}'><img class="workPicture" src="${work.imageUrl}" alt="${work.title}"><a href="#"><img id="${work.id}" class="deleteIcon" src="./assets/icons/delete.png"></a></figure>`
+        const modalHtml = `<figure data-id='${work.id}'><img class="workPicture" src="${work.imageUrl}" alt="${work.title}"><img id="${work.id}" class="deleteIcon" src="./assets/icons/delete.png"></figure>`
         document.querySelector('.gallery').innerHTML += figureHtml
         document.querySelector('.galleryModal').innerHTML += modalHtml
     })
