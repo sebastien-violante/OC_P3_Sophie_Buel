@@ -10,7 +10,7 @@ export function displayWorks(works) {
     // Loop through works and create HTML elements
     works.forEach(work => {
         const figureHtml = `<figure data-id='${work.id}'><img src="${work.imageUrl}" alt="${work.title}"><figcaption>${work.title}</figcaption></figure>`
-        const modalHtml = `<figure data-id='${work.id}'><img class="workPicture" src="${work.imageUrl}" alt="${work.title}"><img id="${work.id}" class="deleteIcon" src="./assets/icons/delete.png"></figure>`
+        const modalHtml = `<figure data-id='${work.id}'><img class="workPicture" src="${work.imageUrl}" alt="${work.title}"><a href="#"><img id="${work.id}" class="deleteIcon" src="./assets/icons/delete.png"></a></figure>`
         document.querySelector('.gallery').innerHTML += figureHtml
         document.querySelector('.galleryModal').innerHTML += modalHtml
     })
@@ -47,7 +47,7 @@ export async function displayCategories(allCategories) {
 export function displayIndexPage(token, allCategories, allWorks) {
     if(token) {
         // Ajout du titre portfolio
-        document.querySelector('#portfolio .title').innerHTML = '<h2>Mes projets</h2><div class="enableModify"><img class="enableModifyIcon" src="./assets/icons/modify.png"><p>modifier</p></div>'
+        document.querySelector('#portfolio .title').innerHTML = '<h2>Mes projets</h2><a href="#" class="enableModify"><img class="enableModifyIcon" src="./assets/icons/modify.png"><p>modifier</p></a>'
         // Suppression des boutons de filtre 
         displayCategories()
         displayModal(allCategories, token)

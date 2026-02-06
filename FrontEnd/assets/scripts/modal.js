@@ -7,7 +7,6 @@ export async function displayModal(allCategories, token) {
     const modal = document.querySelector('.modal')
     const leftSide = document.querySelector('.left-wrapper')
     const rightSide = document.querySelector('.right-wrapper')
-    //const deleteIcons = modal.querySelectorAll('.deleteIcon')
     const errorMessage = document.querySelector('.errorMessage')
     const btnValidateWork = document.querySelector('.btnValidateWork')
     const categoryValues = allCategories.map(category => Number(category.id))
@@ -15,14 +14,22 @@ export async function displayModal(allCategories, token) {
     const pictureZone = document.querySelector('.pictureZone')
     const titleInput = document.querySelector('.textualInputs [name="title"]')
     const categoryInput = document.querySelector('.form-modal select[name="category"]')
-    //const gallery = document.querySelector('.gallery')
     let listFigureId = ((Array.from(modal.querySelectorAll('figure'))).map(figure => figure.dataset['id']))
+    const focusableSelector = 'button, a, input, select'
+    let focusables = []
+    let index = focusables.findIndex(element => element === modal.querySelector(':focus'))
     
     if(document.querySelector('.enableModify')) {
-        document.querySelector('.enableModify').addEventListener('click', ()=>{
+        document.querySelector('.enableModify').addEventListener('click', (event)=>{
+        event.preventDefault()
         modal.style.display = "flex"
         leftSide.style.display="block"
         modal.setAttribute('aria-hidden', 'false');
+        // Liste des éléments focusables dans la modale
+        focusables = Array.from(modal.querySelectorAll(focusableSelector))
+        // Initialisation du focus à l'intérieur de la modale
+        focusables[0].focus()
+
     })
     }
 
@@ -49,31 +56,81 @@ export async function displayModal(allCategories, token) {
         rightSide.classList.remove('visible')
         rightSide.querySelector('.pictureZone').style.backgroundImage = ""
         rightSide.querySelector('.choosePicture').style.display = "flex"
+        focusables[0].focus()
     }
     
     // Fermeture de la modale par clic sur la croix
-    document.querySelector('.closeCross').addEventListener('click', ()=>{
+    document.querySelector('.closeCross').addEventListener('click', (event)=>{
+        event.preventDefault()
         initModal()
+        document.querySelector('.enableModify').focus()
+
     })
 
     // Fermeture de la modale par clic en dehors
     modal.addEventListener('click', (event)=>{
         if(event.target === modal) {
             initModal()
+            document.querySelector('.enableModify').focus()
         }
     })
 
+    // Méthode de focus trap
+    const focusInModal = function(event) {
+        event.preventDefault()
+        if(event.shiftKey === true) {
+            index--
+            if(index === 1) changeSide()
+            console.log(index)
+        } else {
+            index++ 
+            if(index === 2) changeSide()
+            console.log(index)
+        }    
+        if(index > focusables.length - 1) {
+            index = 0
+            changeSide()
+        }
+        if(index < 0) {
+            changeSide()
+            index = focusables.length - 1
+        }
+        focusables[index].focus()
+    }
+    // Fermuture de la modale par touche ESCAPE et gestion du focus trap
+    window.addEventListener('keydown', (event) => {
+        if(event.key === "Escape" || event.key === "Esc") {
+            initModal()
+        }
+        if(event.key === 'Tab' && modal.getAttribute('aria-hidden') === 'false') {
+            focusInModal(event)
+        }
+
+    })
+
+    // Changement de partie de la modale
     function changeSide() {
         leftSide.classList.toggle('visible')
         rightSide.classList.toggle('visible')
     }
-    // Affichage de la deuxième partie de la modale
-    modal.querySelector('.btnAddPhoto').addEventListener('click', () => {
+
+    // Affichage de la deuxième partie de la modale par clic
+    modal.querySelector('.btnAddPhoto').addEventListener('click', (event) => {
+        event.preventDefault()
         changeSide()
     })
 
+    // Gestion de l'ouverture de la recherche de fichier avec utilisation clavier sur label
+    modal.querySelector('.choosePictureLabel').addEventListener('keydown', (event) => {
+        if(event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            modal.querySelector('#fileInput').click()
+        }
+    })
+   
     // Affichage de la première partie de la modale
-    modal.querySelector('.toLeftArrow').addEventListener('click', () => {
+    modal.querySelector('.toLeftArrow').addEventListener('click', (event) => {
+        event.preventDefault()
         changeSide()
     })
 
@@ -89,6 +146,15 @@ export async function displayModal(allCategories, token) {
         }
     })
     
+    // Gestion de l'ouverture du champ file par le clavier 
+    modal.querySelector('.choosePictureLabel').addEventListener('keydown', (event) => {
+        if (event.key === "Enter" || event.key === ' ') {
+            console.log('ouvert')
+            event.preventDefault();
+            modal.querySelector('#fileInput').click();
+        }
+    });
+
     // Prévisualisation de la photo choisie
     choosePictureBtn.addEventListener('change', function() {
         const file = this.files[0]
@@ -162,7 +228,7 @@ export async function displayModal(allCategories, token) {
                 if(formInputs.title.length<2) {
                     throw new Error('Le titre doit comprendre au moins 2 caractères') 
                 }
-                if(!/^[A-Za-zÀ-ÖØ-öø-ÿ .()\-:]{2,}$/.test(formInputs.title)) {
+                if(!/^[A-Za-zÀ-ÖØ-öø-ÿ .()\-:,']{2,}$/.test(formInputs.title)) {
                     throw new Error('Le titre doit comprendre au moins 2 caractères alphanumériques ou certains caractères spéciaux') 
                 }
 
