@@ -20,7 +20,7 @@
 			<li><a href="./index.html">projets</a></li>
 			<li><a href="./index.html#contact">contact</a></li>
 			<li class="loginLogout"></li>
-			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+			<li><a href="#"><img src="./assets/icons/instagram.png" alt="Instagram"></a></li>
 		</ul>
 	</nav>
 </header>
@@ -37,32 +37,33 @@
 	</section>
 	<section id="portfolio">
 		<div class="title"></div>
-		<aside class="modal" aria-hidden="true" role="dialog" aria-labelledby="addPhotos" style="display:none">
+		<aside class="modal" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="addPhotos" style="display:none">
 			<div class="modal-wrapper">
-				<img class="closeCross" src="./assets/icons/closeCross.png">
+				<a href="#" class="closeCross"><img  src="./assets/icons/closeCross.png"></a>
 					<div class="left-wrapper visible">
 						<h2 id="addPhotos">Gallerie photo</h2>
 						<div class="galleryModal"></div>
 						<div class="addBtnZone">
-							<button class="btnAddPhoto">Ajouter des photos</button>
+							<a href="#" class="btnAddPhoto">Ajouter des photos</a>
 						</div>
 					</div>
 					<div class="right-wrapper">
-						<img src="./assets/icons/toLeftArrow.png" class="toLeftArrow">
+						<a href="#" class="toLeftArrow"><img src="./assets/icons/toLeftArrow.png"></a>
 						<h2 id="addPhotos">Ajout photo</h2>
 						<div class="errorMessage"></div>
 						<form class="form-modal">
 							<div class="pictureZone">
 								<div class="choosePicture">
 									<img class="default-picture" src="./assets/icons/default-picture.png">
-									<label class="choosePictureLabel">
-										<input 
+									<label class="choosePictureLabel" tabindex="0" role="button" for="fileInput">
+										+ Ajouter photo
+									</label>
+									<input 
+											id="fileInput"
 											class="newPicture" 
 											type="file" 
 											accept=".jpg, .png" 
 											required>
-										<span>+ Ajouter photo</span>
-									</label>
 									<p class="imgTypes">jpg, png : 4mo max</p>
 								</div>
 							</div>

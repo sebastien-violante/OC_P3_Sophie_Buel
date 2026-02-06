@@ -87,6 +87,10 @@ h2{
 	color: #1D6154
 }
 
+*:focus {
+	box-shadow: 0 0 50px lightgrey;
+}
+
 /******************************* HEADER SECTION */
 
 header {
@@ -411,7 +415,8 @@ footer nav ul li {
 	display: flex;
 	flex-wrap:wrap;
 	gap:10px;
-	min-height: 405px;
+	height: 405px;
+	overflow: auto;
 	padding: 0 105px 48px 105px;
 	border-bottom: 1px solid #B3B3B3;
 }
@@ -446,6 +451,9 @@ footer nav ul li {
 {
 	width: 237px;
 	height: 36px;
+	line-height: 36px;
+	text-align: center;
+	text-decoration: none;
 	border-radius: 60px;
 	background-color: #1D6154;
 	color: white;
@@ -516,6 +524,11 @@ footer nav ul li {
 	cursor: pointer;
 }
 
+.modal-wrapper .right-wrapper .toLeftArrow:focus {
+	outline: 1px solid black;
+	outline-offset: 4px;
+}
+
 .modal-wrapper .pictureZone {
 	border-radius: 3px;
 	background: #E8F1F6;
@@ -554,9 +567,17 @@ footer nav ul li {
 	font-weight: 500;
 }
 
-.modal-wrapper .pictureZone .choosePictureLabel input {
-	display: none;
+.modal-wrapper .pictureZone .choosePicture:focus-within .choosePictureLabel {
+  	outline: 2px solid black;
+  	outline-offset: 4px;
+  	border-radius: 4px; 
 }
+
+.modal-wrapper .pictureZone #fileInput {
+	opacity: 0;
+	height: 0;
+}
+
 .modal-wrapper .pictureZone .choosePicture .imgTypes {
 	font-size: 10px;
 	font-weight: 400;
