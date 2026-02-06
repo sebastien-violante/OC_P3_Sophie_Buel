@@ -9,10 +9,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script src="./assets/scripts/requests.js"></script>
 	<script src="./assets/scripts/main.js" type="module"></script>
-	<script src="./assets/scripts/header.js" defer></script>
-	<script src="./assets/scripts/enableModify.js" type="module"></script>
 
 </head>
 <body>
@@ -40,7 +37,7 @@
 	</section>
 	<section id="portfolio">
 		<div class="title"></div>
-		<aside class="modal" aria-hidden="true" role="dialog" aria-labelledby="addPhotos">
+		<aside class="modal" aria-hidden="true" role="dialog" aria-labelledby="addPhotos" style="display:none">
 			<div class="modal-wrapper">
 				<img class="closeCross" src="./assets/icons/closeCross.png">
 					<div class="left-wrapper visible">
@@ -53,23 +50,30 @@
 					<div class="right-wrapper">
 						<img src="./assets/icons/toLeftArrow.png" class="toLeftArrow">
 						<h2 id="addPhotos">Ajout photo</h2>
+						<div class="errorMessage"></div>
 						<form class="form-modal">
-							<div class="displayPictureZone">
-								<img class="default-picture" src="./assets/icons/default-picture.png">
-								<label class="choosePictureLabel">
-									<input class="newPictureName" type="file" accept=".jpg, .png" value="toto"/>
-									<span>+ Ajouter photo</span>
-								</label>
-								<p class="imgTypes">jpg, png : 4mo max</p>
+							<div class="pictureZone">
+								<div class="choosePicture">
+									<img class="default-picture" src="./assets/icons/default-picture.png">
+									<label class="choosePictureLabel">
+										<input 
+											class="newPicture" 
+											type="file" 
+											accept=".jpg, .png" 
+											required>
+										<span>+ Ajouter photo</span>
+									</label>
+									<p class="imgTypes">jpg, png : 4mo max</p>
+								</div>
 							</div>
 							<div class="textualInputs">
 								<label for="title">Titre</label>
-								<input type="text" id="title" name="title">
+								<input type="text" id="title" name="title" required>
 								<label for="category">Categorie</label>
 								<select id="category" name="category"></select>	
 							</div>
 							<div class="addBtnZone">
-								<button type="submit" class="btnValidatePhoto">Valider</button>
+								<button type="submit" class="btnValidateWork" disabled>Valider</button>
 							</div>
 						</form>
 						

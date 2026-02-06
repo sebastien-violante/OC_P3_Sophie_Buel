@@ -9,8 +9,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script src="./assets/scripts/authentication.js" defer></script>
-	<script src="./assets/scripts/header.js" defer></script>
+	<script src="./assets/scripts/authentication.js" type="module"></script>
 </head>
 <body>
 <header>
@@ -30,9 +29,9 @@
 		<div class="errorMessage"></div>
 		<form>
 			<label for="email">E-mail</label>
-			<input type="email" id="email" name="email">
+			<input type="email" id="email" name="email" required>
 			<label for="password">Mot de passe</label>
-			<input type="password" id="password" name="password">
+			<input type="password" id="password" name="password" required>
 			<button type="submit">Se connecter</button>
 		</form>
 		<a class="forgotten-password-link" href="#">Mot de passe oublié</a>

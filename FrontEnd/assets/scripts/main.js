@@ -1,26 +1,22 @@
-console.log('main.js chagé')
-// import all necessary functions
-import { displayCategories, filterWorks } from './filter.js'
-import { enableModify } from './enableModify.js'    
-import { displayModal } from './modal.js'
+console.log('main.js chargé')
 
-function listenButtons() {
-    const filterButtons = document.querySelectorAll('.filter-btn')
-    filterButtons.forEach(filterButton => {
-        filterButton.addEventListener('click', (event) => {
-            filterWorks(event.target.dataset.id)
-        })
-    })
-}
+// Import des méthodes
+import { getData } from './utils/requests.js'
+import { filterWorksByCategory } from './filter.js'
+import { checkAuth } from './utils/checkAuth.js'
+import { displayIndexPage, displayHeader } from './utils/display.js'
 
-async function initPage() {
-    await displayCategories()
-    const works = JSON.parse(window.localStorage.getItem('allWorks'))
-    await filterWorks(0)
-    listenButtons()
-    enableModify()
-    document.querySelector('.modal').style.display="none"
-    displayModal()
-}
+// Import des data
+const allCategories = await getData('categories')
+const allWorks = await getData('works')
 
-initPage()
+// Affichage des travaux
+filterWorksByCategory(0, allWorks)
+// Vérification de la connexion
+const token = checkAuth()
+
+// Affichage de la page et du header correspondant au statut connecté ou non connecté
+displayIndexPage(token, allCategories, allWorks)
+displayHeader(token)
+
+
