@@ -168,6 +168,7 @@ footer nav ul li {
 	background-image:url("./images/sophie-bluel.png");
 	background-position: center;
 	background-size: contain;
+	background-repeat: no-repeat;
 	height: 355px;
 }
 #introduction img {
@@ -221,6 +222,9 @@ footer nav ul li {
 
 #portfolio .enableModifyIcon {
 	color: black;
+}
+#portfolio .gallery figure img {
+	min-height: 404px;
 }
 
 /******************************* FILTERS SECTION */
@@ -370,7 +374,8 @@ footer nav ul li {
 	color: #3D3D3D;
 }
 
-.login-form .errorMessage {
+.login-form .errorMessage
+{
 	color: red;
 }
 
@@ -437,9 +442,7 @@ footer nav ul li {
 	justify-content: center;
 }
 
-.modal-wrapper .addBtnZone .btnAddPhoto,
-.modal-wrapper .addBtnZone .btnValidatePhoto
-
+.modal-wrapper .addBtnZone .btnAddPhoto
 {
 	width: 237px;
 	height: 36px;
@@ -453,6 +456,23 @@ footer nav ul li {
 	cursor: pointer;
 }
 
+.modal-wrapper .addBtnZone .btnValidateWork
+ {
+	width: 237px;
+	height: 36px;
+	border-radius: 60px;
+	background-color: #A7A7A7;
+	color: white;
+	font-weight: 700;
+	margin-bottom: 45px;
+	margin-top: 38px;
+	border: none;
+ }
+
+.modal-wrapper .addBtnZone .btnValidateWork.enableValidate {
+	background: #1D6154;
+	cursor: pointer;
+}
 .modal-wrapper .closeCross {
 	width: 24px;
 	height: 24px;
@@ -485,7 +505,6 @@ footer nav ul li {
  {
 	opacity: 1;
 	visibility: visible;
-
 }
 
 .modal-wrapper .right-wrapper .toLeftArrow {
@@ -494,27 +513,34 @@ footer nav ul li {
 	position: absolute;
 	top: 26px;
 	left: 30px;
+	cursor: pointer;
 }
 
-.modal-wrapper .displayPictureZone {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	gap: 7px;
+.modal-wrapper .pictureZone {
 	border-radius: 3px;
 	background: #E8F1F6;
 	width: 420px;
 	height: 170px;
 	margin: auto;
+	background-position: center;
+    background-size:contain;
+    background-repeat: no-repeat;
 }
 
-.modal-wrapper .displayPictureZone .default-picture {
+.modal-wrapper .choosePicture {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 7px;
+}
+
+.modal-wrapper .pictureZone .choosePicture .default-picture {
 	height: 76px;
 	width: 76px;
 }
 
-.modal-wrapper .displayPictureZone .choosePictureLabel {
+.modal-wrapper .pictureZone .choosePicture .choosePictureLabel {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -528,10 +554,10 @@ footer nav ul li {
 	font-weight: 500;
 }
 
-.modal-wrapper .displayPictureZone .choosePictureLabel input {
+.modal-wrapper .pictureZone .choosePictureLabel input {
 	display: none;
 }
-.modal-wrapper .displayPictureZone .imgTypes {
+.modal-wrapper .pictureZone .choosePicture .imgTypes {
 	font-size: 10px;
 	font-weight: 400;
 }
@@ -561,3 +587,9 @@ footer nav ul li {
 	background: white;
 	box-sizing: border-box;
 }
+
+.right-wrapper .errorMessage {
+	text-align: center;
+	color: red;
+}
+

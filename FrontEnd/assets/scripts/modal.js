@@ -1,86 +1,214 @@
-export async function displayModal() {
+import { deleteWork, addWork } from "./utils/requests.js"
+import { displayNewWork } from "./utils/display.js"
+
+export async function displayModal(allCategories, token) {
+
+    // Définition des constantes globales
     const modal = document.querySelector('.modal')
     const leftSide = document.querySelector('.left-wrapper')
     const rightSide = document.querySelector('.right-wrapper')
-    const deleteIcons = modal.querySelectorAll('.deleteIcon')
+    //const deleteIcons = modal.querySelectorAll('.deleteIcon')
+    const errorMessage = document.querySelector('.errorMessage')
+    const btnValidateWork = document.querySelector('.btnValidateWork')
+    const categoryValues = allCategories.map(category => Number(category.id))
+    const choosePictureBtn = document.querySelector('.newPicture')
+    const pictureZone = document.querySelector('.pictureZone')
+    const titleInput = document.querySelector('.textualInputs [name="title"]')
+    const categoryInput = document.querySelector('.form-modal select[name="category"]')
+    //const gallery = document.querySelector('.gallery')
+    let listFigureId = ((Array.from(modal.querySelectorAll('figure'))).map(figure => figure.dataset['id']))
     
-    // Récupération catégories et remplissage du select
-    const responseAllCategories = await fetch('http://localhost:5678/api/categories')
-        
-        if (!responseAllCategories.ok) {
-            throw new Error(`Erreur statut HTTP : ${responseAllCategories.status}`);
-        }
-        const allCategories = await responseAllCategories.json()
-        
-        allCategories.forEach( category => {
-            const option = document.createElement('option')
-            option.value = category.id
-            option.innerText = category.name
-            document.querySelector('.form-modal select[name="category"]').appendChild(option)
-        })
-
-    // Affichage de la modale
-    document.querySelector('.enableModify').addEventListener('click', ()=>{
+    if(document.querySelector('.enableModify')) {
+        document.querySelector('.enableModify').addEventListener('click', ()=>{
         modal.style.display = "flex"
         leftSide.style.display="block"
         modal.setAttribute('aria-hidden', 'false');
     })
+    }
 
-    // Fermeture de la modale par clic sur la croix
-    document.querySelector('.closeCross').addEventListener('click', ()=>{
+    // Ajout des options du select category
+    allCategories.forEach( category => {
+        const option = document.createElement('option')
+        option.value = category.id
+        option.innerText = category.name
+        categoryInput.appendChild(option)
+     })
+
+    const formInputs = {
+        file: "",
+        title: "",
+        categoryId: categoryInput.value,
+        url: "",
+        id: null
+    }
+                
+    function initModal() {
         modal.style.display = "none"
         modal.setAttribute('aria-hidden', 'true');
-        rightSide.style.display="none"
-
+        leftSide.classList.add('visible')
+        rightSide.classList.remove('visible')
+        rightSide.querySelector('.pictureZone').style.backgroundImage = ""
+        rightSide.querySelector('.choosePicture').style.display = "flex"
+    }
+    
+    // Fermeture de la modale par clic sur la croix
+    document.querySelector('.closeCross').addEventListener('click', ()=>{
+        initModal()
     })
 
     // Fermeture de la modale par clic en dehors
     modal.addEventListener('click', (event)=>{
         if(event.target === modal) {
-            modal.style.display = "none"
-            modal.setAttribute('aria-hidden', 'true');
-            rightSide.style.display="none"
+            initModal()
         }
     })
 
-    // Affichage de la deuxième partie de la modale
-    modal.querySelector('.btnAddPhoto').addEventListener('click', () => {
+    function changeSide() {
         leftSide.classList.toggle('visible')
         rightSide.classList.toggle('visible')
+    }
+    // Affichage de la deuxième partie de la modale
+    modal.querySelector('.btnAddPhoto').addEventListener('click', () => {
+        changeSide()
     })
 
     // Affichage de la première partie de la modale
     modal.querySelector('.toLeftArrow').addEventListener('click', () => {
-        leftSide.classList.toggle('visible')
-        rightSide.classList.toggle('visible')
+        changeSide()
     })
 
     // Suppression d'un travail au clic sur une icone poubelle
-    deleteIcons.forEach(icon => {
-        const token = localStorage.getItem('token')
-        icon.addEventListener('click', async (event) => {
-            const status = await deleteWork(event.target.id)
+    modal.addEventListener('click', async (event)=>{
+        if(event.target.classList.contains("deleteIcon")) {
+            const status = await deleteWork(event.target.id, token)
             if(status === 204) {
+                console.log(event.target)
                 event.target.closest('figure').style.display="none"
+                document.querySelector(`.gallery [data-id="${event.target.id}"]`).style.display="none"
             }
-            console.log(status)
-        })
-
+        }
     })
+    
+    // Prévisualisation de la photo choisie
+    choosePictureBtn.addEventListener('change', function() {
+        const file = this.files[0]
+        if(file) {
+            const reader = new FileReader()
+            reader.onload = function (event) {
+                document.querySelector('.choosePicture').style.display = "none"
+                pictureZone.style.backgroundImage=`url(${event.target.result})` 
+                formInputs.file = file
+                formInputs.url = event.target.result
+                checkFormInputs(formInputs)
 
-    // Validation du formulaire
-    document.querySelector('.btnValidatePhoto').addEventListener('click', (event) => {
-        event.preventDefault()
-        console.log(event.target)
-        try{
-            const file = document.querySelector('.form-modal .newPictureName').value
-            console.log(file)
-        } catch(error){
-            console.log(error.message)
+            }
+            reader.readAsDataURL(file)
         }
     })
 
+    // Ecouteur d'évènement sur le champ titre
+    titleInput.addEventListener('keyup', function(){
+        formInputs.title = titleInput.value
+        checkFormInputs(formInputs)
+    })
 
+    // Ecouteur d'évènement sur le select
+    //const categoryInput = document.querySelector('.textualInputs [name="category"]')
+    categoryInput.addEventListener('change', function(){
+        formInputs.categoryId = categoryInput.value
+        console.log('categorie choisie :'+formInputs.category)
+        checkFormInputs(formInputs)
+    })
+
+    // Autorisation de validation du formulaire
+    function checkFormInputs(formInputs) {
+        if(formInputs.file && formInputs.title.trim() !== "") {
+            //enableValidateForm(formInputs)
+            btnValidateWork.removeAttribute('disabled')
+            btnValidateWork.classList.add('enableValidate')
+        } else {
+            document.querySelector('.btnValidateWork').setAttribute('disabled', true)
+            document.querySelector('.btnValidateWork').classList.remove('enableValidate')
+        }
+    }
+
+    // Réinitialisation du formulaire après saisie
+    function reInitForm() {
+        pictureZone.style.backgroundImage="none" 
+        titleInput.value = ""
+        document.querySelector('.choosePicture').style.display = "flex"
+        // Remise à zéro du formInputs
+        formInputs.title = ""
+        formInputs.file = ""
+        formInputs.url = ""
+        formInputs.id = null
+        checkFormInputs(formInputs)
+    }
+
+    async function validateForm(event) {
+            event.preventDefault()
+            console.log(formInputs)
+            try {
+                // traitement du champ image
+                const validTypes=['image/jpeg', 'image/jpg', 'image/png']
+                const maxSize = 4*1024*1024
+                if(!validTypes.includes(formInputs.file.type)) {
+                    throw new Error('Le format de l\'image n\'est pas valide') 
+                }
+                if(formInputs.file.size > maxSize) {
+                    throw new Error('La taille de l\'image est trop grande') 
+                }
+                // Traitement du champ titre
+                if(formInputs.title.length<2) {
+                    throw new Error('Le titre doit comprendre au moins 2 caractères') 
+                }
+                if(!/^[A-Za-zÀ-ÖØ-öø-ÿ .()\-:]{2,}$/.test(formInputs.title)) {
+                    throw new Error('Le titre doit comprendre au moins 2 caractères alphanumériques ou certains caractères spéciaux') 
+                }
+
+                // Traitement du champ catégorie
+                console.log(Number(formInputs.categoryId))
+                console.log(categoryValues)
+                if(!categoryValues.includes(Number(formInputs.categoryId))) {
+                    throw new Error ('le choix de cette catégorie n\'est pas possible')
+                }
+
+                // suppression des messages d'erreur
+                errorMessage.innerHTML = ""
+
+                const formData = new FormData()
+                formData.append('image', formInputs.file )
+                formData.append('title', formInputs.title)
+                formData.append('category', Number(formInputs.categoryId))
+                for (const [key, value] of formData.entries()) {
+                    console.log(key, value);
+                }
+
+                const requestResult = await addWork(formData, token)
+                if(requestResult === 201) {
+                    // Attribution d'un nouvel id au travail en fonction des id déjà existants
+                    let lastWorkId = Number(listFigureId[listFigureId.length-1])
+                    const newId = lastWorkId+1
+                    listFigureId.push(newId)
+                    formInputs.id=newId
+                    displayNewWork(formInputs)
+                    reInitForm()
+                } else {
+                    console.log(requestResult)
+                }
+
+            } catch(error) {
+                console.log(error.message)
+                document.querySelector('.errorMessage').innerHTML = `<p>${error.message}</p>`
+            }
+    }
+
+    function enableValidateForm(formInputs,token, errorMessage) {
+        btnValidateWork.removeEventListener('click', validateForm)
+        btnValidateWork.addEventListener('click', validateForm)
+    }
+
+    enableValidateForm(formInputs,token, errorMessage)
 
 }
 
