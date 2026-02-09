@@ -7,17 +7,19 @@ export async function displayModal(allCategories, token) {
     const modal = document.querySelector('.modal')
     const leftSide = document.querySelector('.left-wrapper')
     const rightSide = document.querySelector('.right-wrapper')
-    const errorMessage = document.querySelector('.errorMessage')
+    const errorMessage = modal.querySelector('.errorMessage')
     const btnValidateWork = document.querySelector('.btnValidateWork')
-    const categoryValues = allCategories.map(category => Number(category.id))
+    const categoryValues = Array.from(allCategories).map(category => Number(category.id))
     const choosePictureBtn = document.querySelector('.newPicture')
     const pictureZone = document.querySelector('.pictureZone')
     const titleInput = document.querySelector('.textualInputs [name="title"]')
     const categoryInput = document.querySelector('.form-modal select[name="category"]')
     let listFigureId = ((Array.from(modal.querySelectorAll('figure'))).map(figure => figure.dataset['id']))
-    const focusableSelector = 'button, a, input, select'
     let focusables = []
+    let firstSlideLastIndex = null
+    let changeSlide
     let index = focusables.findIndex(element => element === modal.querySelector(':focus'))
+    const deleteChosenPicture = modal.querySelector('.deleteChosenPicture')
     
     if(document.querySelector('.enableModify')) {
         document.querySelector('.enableModify').addEventListener('click', (event)=>{
@@ -26,10 +28,9 @@ export async function displayModal(allCategories, token) {
         leftSide.style.display="block"
         modal.setAttribute('aria-hidden', 'false');
         // Liste des éléments focusables dans la modale
-        focusables = Array.from(modal.querySelectorAll(focusableSelector))
+        focusables = getFocusableElements()
         // Initialisation du focus à l'intérieur de la modale
         focusables[0].focus()
-
     })
     }
 
@@ -48,7 +49,12 @@ export async function displayModal(allCategories, token) {
         url: "",
         id: null
     }
-                
+    
+    function getFocusableElements() {
+        const focusableSelectors = 'button, [href], input, select'
+        return Array.from(modal.querySelectorAll(focusableSelectors)).filter(el => el.offsetParent !== null);
+    }
+
     function initModal() {
         modal.style.display = "none"
         modal.setAttribute('aria-hidden', 'true');
@@ -73,19 +79,28 @@ export async function displayModal(allCategories, token) {
             initModal()
             document.querySelector('.enableModify').focus()
         }
-    })
+    })  
+
+    // Détermination de l'index de "bascule"
+    function getChangeSlideIndex() {
+        focusables = getFocusableElements()
+        const changeSlideIndex = focusables.findIndex(el =>
+            el.classList.contains('btnAddPhoto')
+        )
+        return changeSlideIndex
+    }
 
     // Méthode de focus trap
     const focusInModal = function(event) {
-        event.preventDefault()
+        
+       firstSlideLastIndex = getChangeSlideIndex()
+       event.preventDefault()
         if(event.shiftKey === true) {
             index--
-            if(index === 1) changeSide()
-            console.log(index)
+            if(index === firstSlideLastIndex) changeSide()
         } else {
             index++ 
-            if(index === 2) changeSide()
-            console.log(index)
+            if(index === firstSlideLastIndex+1) changeSide()
         }    
         if(index > focusables.length - 1) {
             index = 0
@@ -97,7 +112,7 @@ export async function displayModal(allCategories, token) {
         }
         focusables[index].focus()
     }
-    // Fermuture de la modale par touche ESCAPE et gestion du focus trap
+    // Fermeture de la modale par touche ESCAPE et gestion du focus trap
     window.addEventListener('keydown', (event) => {
         if(event.key === "Escape" || event.key === "Esc") {
             initModal()
@@ -136,20 +151,35 @@ export async function displayModal(allCategories, token) {
 
     // Suppression d'un travail au clic sur une icone poubelle
     modal.addEventListener('click', async (event)=>{
-        if(event.target.classList.contains("deleteIcon")) {
-            const status = await deleteWork(event.target.id, token)
+        if(event.target.parentNode.classList.contains("deleteIcon")) {
+            const status = await deleteWork(event.target.parentNode.id, token)
             if(status === 204) {
-                console.log(event.target)
                 event.target.closest('figure').style.display="none"
-                document.querySelector(`.gallery [data-id="${event.target.id}"]`).style.display="none"
+                document.querySelector(`.gallery [data-id="${event.target.parentNode.id}"]`).style.display="none"
+                focusables = getFocusableElements()
+                firstSlideLastIndex = getChangeSlideIndex()
+                focusables[1].focus()
+                index = 1
             }
         }
     })
-    
-    // Gestion de l'ouverture du champ file par le clavier 
+    // Suppression d'un travail au clavier (attention : target = image)
+    modal.addEventListener('keydown', async (event)=>{
+        if(event.key === "Enter" && event.target.classList.contains("deleteIcon")) {
+            const status = await deleteWork(event.target.id, token)
+            if(status === 204) {
+                event.target.closest('figure').style.display="none"
+                document.querySelector(`.gallery [data-id="${event.target.id}"]`).style.display="none"
+                focusables = getFocusableElements()
+                firstSlideLastIndex = getChangeSlideIndex()
+                focusables[1].focus()
+                index = 1
+            }
+        }
+    })
+    // Gestion de l'ouverture du champ file par le clavier (attention : target = lien)
     modal.querySelector('.choosePictureLabel').addEventListener('keydown', (event) => {
         if (event.key === "Enter" || event.key === ' ') {
-            console.log('ouvert')
             event.preventDefault();
             modal.querySelector('#fileInput').click();
         }
@@ -163,6 +193,7 @@ export async function displayModal(allCategories, token) {
             reader.onload = function (event) {
                 document.querySelector('.choosePicture').style.display = "none"
                 pictureZone.style.backgroundImage=`url(${event.target.result})` 
+                deleteChosenPicture.classList.remove('hidden')
                 formInputs.file = file
                 formInputs.url = event.target.result
                 checkFormInputs(formInputs)
@@ -172,6 +203,16 @@ export async function displayModal(allCategories, token) {
         }
     })
 
+    // Suppression de la photo sélectionnée
+    deleteChosenPicture.addEventListener('click', (event) => {
+        pictureZone.style.backgroundImage="" 
+        document.querySelector('.choosePicture').style.display = "flex"
+        errorMessage.innerHTML = ""
+        event.target.classList.add('hidden')
+        focusables = getFocusableElements()
+        firstSlideLastIndex = getChangeSlideIndex()
+    })
+
     // Ecouteur d'évènement sur le champ titre
     titleInput.addEventListener('keyup', function(){
         formInputs.title = titleInput.value
@@ -179,10 +220,8 @@ export async function displayModal(allCategories, token) {
     })
 
     // Ecouteur d'évènement sur le select
-    //const categoryInput = document.querySelector('.textualInputs [name="category"]')
     categoryInput.addEventListener('change', function(){
         formInputs.categoryId = categoryInput.value
-        console.log('categorie choisie :'+formInputs.category)
         checkFormInputs(formInputs)
     })
 
@@ -213,7 +252,6 @@ export async function displayModal(allCategories, token) {
 
     async function validateForm(event) {
             event.preventDefault()
-            console.log(formInputs)
             try {
                 // traitement du champ image
                 const validTypes=['image/jpeg', 'image/jpg', 'image/png']
@@ -233,8 +271,6 @@ export async function displayModal(allCategories, token) {
                 }
 
                 // Traitement du champ catégorie
-                console.log(Number(formInputs.categoryId))
-                console.log(categoryValues)
                 if(!categoryValues.includes(Number(formInputs.categoryId))) {
                     throw new Error ('le choix de cette catégorie n\'est pas possible')
                 }
@@ -246,10 +282,7 @@ export async function displayModal(allCategories, token) {
                 formData.append('image', formInputs.file )
                 formData.append('title', formInputs.title)
                 formData.append('category', Number(formInputs.categoryId))
-                for (const [key, value] of formData.entries()) {
-                    console.log(key, value);
-                }
-
+                
                 const requestResult = await addWork(formData, token)
                 if(requestResult === 201) {
                     // Attribution d'un nouvel id au travail en fonction des id déjà existants
@@ -258,13 +291,17 @@ export async function displayModal(allCategories, token) {
                     listFigureId.push(newId)
                     formInputs.id=newId
                     displayNewWork(formInputs)
+                    focusables = getFocusableElements()
+                    firstSlideLastIndex = getChangeSlideIndex()
+                    focusables[1].focus()
+                    index = 1
                     reInitForm()
+                    changeSide()
                 } else {
                     console.log(requestResult)
                 }
 
             } catch(error) {
-                console.log(error.message)
                 document.querySelector('.errorMessage').innerHTML = `<p>${error.message}</p>`
             }
     }

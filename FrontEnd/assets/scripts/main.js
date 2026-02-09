@@ -1,15 +1,20 @@
-console.log('main.js chargé')
-
 // Import des méthodes
 import { getData } from './utils/requests.js'
 import { filterWorksByCategory } from './filter.js'
 import { checkAuth } from './utils/checkAuth.js'
 import { displayIndexPage, displayHeader } from './utils/display.js'
 
-// Import des data
-const allCategories = await getData('categories')
+// Import des data depuis l'API
+const allBrutCategories = await getData('categories')
 const allWorks = await getData('works')
-const previousFocus = null
+
+// Elimination des doublons possibles de catégories
+const allCategories = new Set
+allBrutCategories.forEach(category => { 
+    allCategories.add(category)
+})
+
+//const allCategories = filterCurrentWorksCategories(allBrutCategories, allWorks)
 
 // Affichage des travaux
 filterWorksByCategory(0, allWorks)
