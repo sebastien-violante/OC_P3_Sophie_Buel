@@ -37,25 +37,26 @@
 	</section>
 	<section id="portfolio">
 		<div class="title"></div>
-		<aside class="modal" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="addPhotos" style="display:none">
+		<dialog class="modal" aria-hidden="true" aria-modal="false" aria-labelledby="addPhotos" style="display:none">
 			<div class="modal-wrapper">
-				<a href="#" class="closeCross"><img  src="./assets/icons/closeCross.png"></a>
 					<div class="left-wrapper visible">
-						<h2 id="addPhotos">Gallerie photo</h2>
+						<a href="#" class="closeCross"><img  src="./assets/icons/closeCross.png" alt="fermeture de la modale"></a>
+						<h2 id="addPhotos" class="addPhotos">Gallerie photo</h2>
 						<div class="galleryModal"></div>
 						<div class="addBtnZone">
 							<a href="#" class="btnAddPhoto">Ajouter des photos</a>
 						</div>
 					</div>
 					<div class="right-wrapper">
-						<a href="#" class="toLeftArrow"><img src="./assets/icons/toLeftArrow.png"></a>
-						<h2 id="addPhotos">Ajout photo</h2>
+						<a href="#" class="toLeftArrow"><img src="./assets/icons/toLeftArrow.png" alt="retour page précédente"></a>
+						<a href="#" class="closeCross" id="2"><img  src="./assets/icons/closeCross.png" alt="fermeture de la modale"></a>
+						<h2 class="addPhotos">Ajout photo</h2>
 						<div class="errorMessage"></div>
 						<form class="form-modal">
 							<div class="pictureZone">
 								<div class="choosePicture">
-									<img class="default-picture" src="./assets/icons/default-picture.png">
-									<label class="choosePictureLabel" tabindex="0" role="button" for="fileInput">
+									<img class="default-picture" src="./assets/icons/default-picture.png" alt="image par défaut">
+									<label class="choosePictureLabel" tabindex="0" for="fileInput">
 										+ Ajouter photo
 									</label>
 									<input 
@@ -66,6 +67,7 @@
 											required>
 									<p class="imgTypes">jpg, png : 4mo max</p>
 								</div>
+								<a href="#" class="deleteChosenPicture hidden"><img src="./assets/icons/delete.png"></a>
 							</div>
 							<div class="textualInputs">
 								<label for="title">Titre</label>
@@ -81,7 +83,7 @@
 					</div>
 					
 			</div>
-		</aside>
+		</dialog>
 		<div class="filters">
 			<!-- Les boutons de filtres seront insérés ici par le script main.js -->
 		</div>

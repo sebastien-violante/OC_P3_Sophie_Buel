@@ -2,13 +2,10 @@ import { checkAuth } from "./utils/checkAuth.js"
 import { tryAuthentication } from "./utils/requests.js"
 import { displayHeader } from "./utils/display.js"
 
-console.log('authentication.js chargé')
 const errorMessage = document.querySelector('.errorMessage')
 const form = document.querySelector('form')
 
-
 // Vérification de l'état authentifié et modification du header
-
 const token = checkAuth()
 displayHeader(token)
 
@@ -30,7 +27,6 @@ form.addEventListener('submit', async (event) =>{
             throw new Error('Vous devez saisir un mot de passe d\'au moins 6 caractères')
         }
         const token = await tryAuthentication(email, password)
-        console.log(token)
         if(token) {
             window.location.href=('index.html')
         } else {
