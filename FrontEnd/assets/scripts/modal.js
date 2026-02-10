@@ -212,7 +212,7 @@ export async function displayModal(allCategories, token) {
         pictureZone.style.backgroundImage="" 
         document.querySelector('.choosePicture').style.display = "flex"
         errorMessage.innerHTML = ""
-        event.target.classList.add('hidden')
+        event.target.parentNode.classList.add('hidden')
         focusables = getFocusableElements()
         firstSlideLastIndex = getChangeSlideIndex()
     })
