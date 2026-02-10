@@ -208,6 +208,7 @@ export async function displayModal(allCategories, token) {
 
     // Suppression de la photo sélectionnée
     deleteChosenPicture.addEventListener('click', (event) => {
+        event.preventDefault()
         pictureZone.style.backgroundImage="" 
         document.querySelector('.choosePicture').style.display = "flex"
         errorMessage.innerHTML = ""
