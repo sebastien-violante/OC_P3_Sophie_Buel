@@ -529,6 +529,7 @@ footer nav ul li {
 	border: none;
 	font-size: 14px;
 	font-weight: 500;
+	cursor: pointer;
 }
 .modal-wrapper .pictureZone .choosePicture:focus-within .choosePictureLabel {
   	outline: 2px solid white;

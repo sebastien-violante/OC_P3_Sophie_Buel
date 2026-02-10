@@ -297,10 +297,10 @@ export async function displayModal(allCategories, token) {
                     displayNewWork(formInputs)
                     focusables = getFocusableElements()
                     firstSlideLastIndex = getChangeSlideIndex()
-                    focusables[1].focus()
-                    index = 1
+                    //focusables[1].focus()
+                    //index = 1
                     reInitForm()
-                    changeSide()
+                    //changeSide()
                 } else {
                     console.log(requestResult)
                 }

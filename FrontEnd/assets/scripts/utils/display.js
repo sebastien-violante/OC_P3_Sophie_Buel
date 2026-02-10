@@ -44,9 +44,9 @@ export async function displayCategories(allCategories) {
         // Bouclage sur l'objet pour afficher les boutons de filtre
         document.querySelector('.filters').innerHTML = '<button class="filter-btn" data-id="0">Tous</button>'
         allCategories.forEach(category => {
-        const categoryHtml = `<button class="filter-btn" data-id="${category.id}">${category.name}</button>`
-        document.querySelector('.filters').innerHTML += categoryHtml
-    }) 
+            const categoryHtml = `<button class="filter-btn" data-id="${category.id}">${category.name}</button>`
+            document.querySelector('.filters').innerHTML += categoryHtml
+        }) 
     } else {
         // Cas où l'utilisateur est connecté en tant qu'administrateur. Les filtres ne sont pas accessibles
         document.querySelector('.filters').innerHTML = ""
