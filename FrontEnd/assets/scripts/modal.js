@@ -66,11 +66,12 @@ export async function displayModal(allCategories, token) {
     }
     
     // Fermeture de la modale par clic sur la croix
-    document.querySelector('.closeCross').addEventListener('click', (event)=>{
-        event.preventDefault()
-        initModal()
-        document.querySelector('.enableModify').focus()
-
+    document.querySelectorAll('.closeCross').forEach(closeCross => {
+        closeCross.addEventListener('click', (event)=>{
+            event.preventDefault()
+            initModal()
+            document.querySelector('.enableModify').focus()
+        })
     })
 
     // Fermeture de la modale par clic en dehors
@@ -151,7 +152,9 @@ export async function displayModal(allCategories, token) {
 
     // Suppression d'un travail au clic sur une icone poubelle
     modal.addEventListener('click', async (event)=>{
+        
         if(event.target.parentNode.classList.contains("deleteIcon")) {
+            event.preventDefault()
             const status = await deleteWork(event.target.parentNode.id, token)
             if(status === 204) {
                 event.target.closest('figure').style.display="none"
