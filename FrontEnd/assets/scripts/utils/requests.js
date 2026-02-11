@@ -1,11 +1,11 @@
 /**
  * Récupère un type de données depuis l'API
- * @param {string} type - le type de données à récupérer : works ou categories
+ * @param {string} table - la table de données à récupérer : works ou categories
  * @return {response} allData - les données récupérées en provenance de l'API
  */
-export async function getData(type) {
+export async function getData(table) {
     try {
-        const requestResponse = await fetch(`http://localhost:5678/api/${type}`)
+        const requestResponse = await fetch(`http://localhost:5678/api/${table}`)
         if(!requestResponse.ok) {
             throw new Error(`Erreur HTTP : ${requestResponse.status}`)
         }

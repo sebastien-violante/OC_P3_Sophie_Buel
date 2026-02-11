@@ -1,4 +1,4 @@
-import { displayWorks} from "./utils/display.js";
+import { displayWorksInHomepage } from "./utils/display.js";
 
 /**
  * Get categories from API
@@ -30,7 +30,7 @@ export async function getAllCategories() {
  * Récupère les catégories à l'aide de l'API et les affiche
  * @param {number} id - l'id de la catégorie à afficher
  * @param {object} works - l'ensemble des travaux avant filtrage
- */
+ 
 export function displayCategories() {
     // Crée un bouton par défaut permettant avec l'id = 0 d'afficher tous les travaux sans filtrage
     document.querySelector('.filters').innerHTML = '<button class="filter-btn" data-id="0">Tous</button>'
@@ -40,7 +40,7 @@ export function displayCategories() {
         document.querySelector('.filters').innerHTML += categoryHtml
     })
 }
-
+*/
 /**
  * Filtre les travaux en fonction de l'id d'une catégorie et appelle leur affichage
  * @param {number} id - l'id de la catégorie à afficher
@@ -48,10 +48,10 @@ export function displayCategories() {
  */
 export function filterWorksByCategory(id, works) {
     if(id === 0) {
-        displayWorks(works)
+        displayWorksInHomepage(works)
     } else {
         const filteredWorks = works.filter(work => work.categoryId === id)
-        displayWorks(filteredWorks)
+        displayWorksInHomepage(filteredWorks)
     }
 }
 

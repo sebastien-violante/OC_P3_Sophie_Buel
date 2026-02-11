@@ -15,9 +15,10 @@ form.addEventListener('submit', async (event) =>{
     event.preventDefault()
     errorMessage.innerHTML = ""
     try{
-        const email = form.querySelector('[type="email').value.trim()
+        const email = form.querySelector('[type="email"]').value.trim()
         if(email == "") {
             throw new Error('Vous devez saisir un email')
+            
         }
         if(!/^[\w.-]+@[\w.-]+.[a-z]{2,}$/.test(email)) {
             throw new Error('L\'email saisi n\'a pas un format valide ')
@@ -33,7 +34,7 @@ form.addEventListener('submit', async (event) =>{
             throw new Error('Vos informations d\'authentification sont incorrectes')
         }
     } catch(error) {
-        errorMessage.innerHTML = error.message
+      errorMessage.innerHTML = error.message
     }
 })
 

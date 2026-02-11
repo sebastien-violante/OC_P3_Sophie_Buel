@@ -8,16 +8,13 @@ import { displayIndexPage, displayHeader } from './utils/display.js'
 const allBrutCategories = await getData('categories')
 const allWorks = await getData('works')
 
-// Elimination des doublons possibles de catégories
+// Elimination des doublons possibles de catégories et ajout de la catégorie 0 = "tous"
 const allCategories = new Set
+allCategories.add({id: 0, name: 'Tous'})
 allBrutCategories.forEach(category => { 
     allCategories.add(category)
 })
 
-//const allCategories = filterCurrentWorksCategories(allBrutCategories, allWorks)
-
-// Affichage des travaux
-filterWorksByCategory(0, allWorks)
 // Vérification de la connexion
 const token = checkAuth()
 
@@ -25,3 +22,5 @@ const token = checkAuth()
 displayIndexPage(token, allCategories, allWorks)
 displayHeader(token)
 
+// Affichage des travaux par catégorie
+filterWorksByCategory(0, allWorks)

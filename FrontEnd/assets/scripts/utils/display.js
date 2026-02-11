@@ -3,17 +3,29 @@ import { displayModal } from '../modal.js'
 import { logout } from './checkAuth.js'
 
 /**
- * Affiche les travaux dans la gallerie et dans la modale
+ * Affiche les travaux dans la gallerie
  * @param {object} works - les travaux récupérés depuis l'API
  */
-export function displayWorks(works) {
+export function displayWorksInHomepage(works) {
     // Initialisation du contenu de la gallerie
     document.querySelector('.gallery').innerHTML = ''
     // Bouclage sur les travaux pour créer les éléments
     works.forEach(work => {
         const figureHtml = `<figure data-id='${work.id}'><img src="${work.imageUrl}" alt="${work.title}"><figcaption>${work.title}</figcaption></figure>`
-        const modalHtml = `<figure data-id='${work.id}'><img class="workPicture" src="${work.imageUrl}" alt="${work.title}"><a href="#" id="${work.id}" class="deleteIcon"><img src="./assets/icons/delete.png"></a></figure>`
         document.querySelector('.gallery').innerHTML += figureHtml
+    })
+}
+
+/**
+ * Affiche les travaux dans la modale
+ * @param {object} works - les travaux récupérés depuis l'API
+ */
+export function displayWorksInModal(works) {
+    // Initialisation du contenu de la gallerie
+    document.querySelector('.galleryModal').innerHTML = ''
+    // Bouclage sur les travaux pour créer les éléments
+    works.forEach(work => {
+        const modalHtml = `<figure data-id='${work.id}'><img class="workPicture" src="${work.imageUrl}" alt="${work.title}"><a href="#" id="${work.id}" class="deleteIcon"><img src="./assets/icons/delete.png"></a></figure>`
         document.querySelector('.galleryModal').innerHTML += modalHtml
     })
 }
@@ -42,7 +54,6 @@ export function displayNewWork(work) {
 export async function displayCategories(allCategories) {
     if(allCategories) {
         // Bouclage sur l'objet pour afficher les boutons de filtre
-        document.querySelector('.filters').innerHTML = '<button class="filter-btn" data-id="0">Tous</button>'
         allCategories.forEach(category => {
             const categoryHtml = `<button class="filter-btn" data-id="${category.id}">${category.name}</button>`
             document.querySelector('.filters').innerHTML += categoryHtml
@@ -66,7 +77,11 @@ export function displayIndexPage(token, allCategories, allWorks) {
         document.querySelector('#portfolio .title').innerHTML = '<h2>Mes projets</h2><a href="#" class="enableModify"><img class="enableModifyIcon" src="./assets/icons/modify.png"><p>modifier</p></a>'
         // Suppression des boutons de filtre 
         displayCategories()
+        
+
+        // Affichage de la modale et des travaux à l'intérieur
         displayModal(allCategories, token)
+        displayWorksInModal(allWorks)
     } 
     // Cas d'un utilisateur non connecté
     else 
@@ -100,6 +115,8 @@ export function displayHeader(token) {
             logout()
             window.location.href=('index.html')
         })
+        document.querySelector('.header-banner').innerHTML='<img class="banner-img" src="./assets/icons/edition.png"><span class="banner-span">Mode édition</span>'
+        document.querySelector('.header-banner').classList.toggle('connected')
     }
     // Cas de l'utilisateur non connecté
     else 
