@@ -382,11 +382,13 @@ footer nav ul li {
 }
 .login-form .errorMessage
 {
+	width: 100%;
 	color: red;
 	margin-bottom: .2em;
 	position: absolute;
-	bottom: 40px;
+	top: 6px;
 	left: 0;
+	text-align: center;
 }
 
 .login-error-email {
@@ -453,10 +455,14 @@ footer nav ul li {
 	cursor: pointer;
 	transition: transform 0.5s ease;
 }
+.modal-wrapper .galleryModal .deleteIcon:focus img {
+	transform: scale(1.2);
+}
 .modal-wrapper .addBtnZone {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	position: relative;
 }
 .modal-wrapper .addBtnZone .btnAddPhoto
 {
@@ -485,6 +491,7 @@ footer nav ul li {
 	margin-bottom: 32px;
 	margin-top: 32px;
 	border: none;
+	outline: 1px solid grey;
  }
 .modal-wrapper .addBtnZone .btnValidateWork.enableValidate {
 	background: #1D6154;
@@ -553,6 +560,7 @@ footer nav ul li {
 	align-items: center;
 	justify-content: center;
 	gap: 7px;
+	padding-top: 10px;
 }
 .modal-wrapper .pictureZone .choosePicture .default-picture {
 	height: 76px;
@@ -571,6 +579,14 @@ footer nav ul li {
 	font-size: 14px;
 	font-weight: 500;
 	cursor: pointer;
+}
+.modal-wrapper .pictureZone .choosePicture .choosePictureLabel.large{
+	height: 170px;
+	background-position: center;
+	background-size:contain;
+	background-repeat: no-repeat;
+	border: 0px solid white;
+	border-radius: 0;
 }
 .modal-wrapper .pictureZone .choosePicture:focus-within .choosePictureLabel {
   	outline: 2px solid white;
@@ -613,7 +629,12 @@ footer nav ul li {
 	background: white;
 	box-sizing: border-box;
 }
+
 .right-wrapper .errorMessage {
+	position: absolute;
+	bottom: 80px;
+	width: 100%;
+	text-align: center;
 	text-align: center;
 	color: red;
 }

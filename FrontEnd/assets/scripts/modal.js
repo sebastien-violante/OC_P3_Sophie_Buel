@@ -1,5 +1,6 @@
 import { deleteWork, addWork } from "./utils/requests.js"
 import { displayNewWork } from "./utils/display.js"
+import { getFocusableElements } from "./utils/focusTrap.js"
 
 export async function displayModal(allCategories, token) {
 
@@ -15,12 +16,40 @@ export async function displayModal(allCategories, token) {
     const titleInput = document.querySelector('.textualInputs [name="title"]')
     const categoryInput = document.querySelector('.form-modal select[name="category"]')
     let listFigureId = ((Array.from(modal.querySelectorAll('figure'))).map(figure => figure.dataset['id']))
-    let focusables = []
     let firstSlideLastIndex = null
-    let changeSlide
+    let focusables = []
     let index = focusables.findIndex(element => element === modal.querySelector(':focus'))
-    const deleteChosenPicture = modal.querySelector('.deleteChosenPicture')
-    
+
+    // Définition des fonctions
+
+    /**
+        * Display the modal and initialize each part
+    */
+    function initModal() {
+        modal.style.display = "none"
+        modal.setAttribute('aria-hidden', 'true');
+        leftSide.classList.add('visible')
+        rightSide.classList.remove('visible')
+        rightSide.querySelector('.pictureZone').style.backgroundImage = ""
+        rightSide.querySelector('.choosePicture').style.display = "flex"
+        index = 0
+        focusables[0].focus()
+    }
+
+    /**
+        * Determines the index used to change slide
+        * @return {number} - changeSlideIndex : the transition index between the two parts of the modal
+    */
+    function getChangeSlideIndex() {
+        focusables = getFocusableElements(modal)
+        const changeSlideIndex = focusables.findIndex(el =>
+            el.classList.contains('btnAddPhoto')
+        )
+        return changeSlideIndex
+    }
+
+
+    // Apparition de la modale si présence de la mention "Modifier"
     if(document.querySelector('.enableModify')) {
         document.querySelector('.enableModify').addEventListener('click', (event)=>{
         event.preventDefault()
@@ -28,20 +57,24 @@ export async function displayModal(allCategories, token) {
         leftSide.style.display="block"
         modal.setAttribute('aria-hidden', 'false');
         // Liste des éléments focusables dans la modale
-        focusables = getFocusableElements()
+        focusables = getFocusableElements(modal)
+        console.log(focusables)
         // Initialisation du focus à l'intérieur de la modale
         focusables[0].focus()
     })
     }
 
+    
     // Ajout des options du select category
-    allCategories.forEach( category => {
+    const categoryArray = Array.from(allCategories)
+    for(let index = 1; index < categoryArray.length; index++) {
         const option = document.createElement('option')
-        option.value = category.id
-        option.innerText = category.name
+        option.value = categoryArray[index].id
+        option.innerText = categoryArray[index].name
         categoryInput.appendChild(option)
-     })
-
+    }
+    
+    // Initialisation de l'objet formInputs pour le traitement de l'autorisation de validation du formulaire
     const formInputs = {
         file: "",
         title: "",
@@ -50,26 +83,14 @@ export async function displayModal(allCategories, token) {
         id: null
     }
     
-    function getFocusableElements() {
-        const focusableSelectors = 'button, [href], input, select'
-        return Array.from(modal.querySelectorAll(focusableSelectors)).filter(el => el.offsetParent !== null);
-    }
-
-    function initModal() {
-        modal.style.display = "none"
-        modal.setAttribute('aria-hidden', 'true');
-        leftSide.classList.add('visible')
-        rightSide.classList.remove('visible')
-        rightSide.querySelector('.pictureZone').style.backgroundImage = ""
-        rightSide.querySelector('.choosePicture').style.display = "flex"
-        focusables[0].focus()
-    }
     
+        
     // Fermeture de la modale par clic sur la croix
     document.querySelectorAll('.closeCross').forEach(closeCross => {
         closeCross.addEventListener('click', (event)=>{
             event.preventDefault()
             initModal()
+            reInitForm()
             document.querySelector('.enableModify').focus()
         })
     })
@@ -78,18 +99,10 @@ export async function displayModal(allCategories, token) {
     modal.addEventListener('click', (event)=>{
         if(event.target === modal) {
             initModal()
+            reInitForm()
             document.querySelector('.enableModify').focus()
         }
     })  
-
-    // Détermination de l'index de "bascule"
-    function getChangeSlideIndex() {
-        focusables = getFocusableElements()
-        const changeSlideIndex = focusables.findIndex(el =>
-            el.classList.contains('btnAddPhoto')
-        )
-        return changeSlideIndex
-    }
 
     // Méthode de focus trap
     const focusInModal = function(event) {
@@ -98,9 +111,11 @@ export async function displayModal(allCategories, token) {
        event.preventDefault()
         if(event.shiftKey === true) {
             index--
+            console.log(index)
             if(index === firstSlideLastIndex) changeSide()
         } else {
             index++ 
+            console.log(index)
             if(index === firstSlideLastIndex+1) changeSide()
         }    
         if(index > focusables.length - 1) {
@@ -113,6 +128,25 @@ export async function displayModal(allCategories, token) {
         }
         focusables[index].focus()
     }
+
+    // Changement de côté par appui sur entrée sur le bouton ajout photo
+    modal.querySelector('.btnAddPhoto').addEventListener('keydown', (event) => {
+        if(event.key === 'Enter' || event.key === ' ') {
+            index = firstSlideLastIndex+1
+            modal.querySelector('.toLeftArrow').focus()
+            console.log('nouvel index :'+index)
+        }
+    })
+
+    // Changement de côté par appui sur entrée sur la flèche retour
+     modal.querySelector('.toLeftArrow').addEventListener('keydown', (event) => {
+        if(event.key === 'Enter' || event.key === ' ') {
+            index = firstSlideLastIndex
+            modal.querySelector('.btnAddPhoto').focus()
+            console.log('nouvel index :'+index)
+        }
+    })
+    
     // Fermeture de la modale par touche ESCAPE et gestion du focus trap
     window.addEventListener('keydown', (event) => {
         if(event.key === "Escape" || event.key === "Esc") {
@@ -130,12 +164,6 @@ export async function displayModal(allCategories, token) {
         rightSide.classList.toggle('visible')
     }
 
-    // Affichage de la deuxième partie de la modale par clic
-    modal.querySelector('.btnAddPhoto').addEventListener('click', (event) => {
-        event.preventDefault()
-        changeSide()
-    })
-
     // Gestion de l'ouverture de la recherche de fichier avec utilisation clavier sur label
     modal.querySelector('.choosePictureLabel').addEventListener('keydown', (event) => {
         if(event.key === 'Enter' || event.key === ' ') {
@@ -150,6 +178,12 @@ export async function displayModal(allCategories, token) {
         changeSide()
     })
 
+    // Affichage de la deuxième partie de la modale par clic
+    modal.querySelector('.btnAddPhoto').addEventListener('click', (event) => {
+        event.preventDefault()
+        changeSide()
+    })
+
     // Suppression d'un travail au clic sur une icone poubelle
     modal.addEventListener('click', async (event)=>{
         
@@ -159,7 +193,7 @@ export async function displayModal(allCategories, token) {
             if(status === 204) {
                 event.target.closest('figure').style.display="none"
                 document.querySelector(`.gallery [data-id="${event.target.parentNode.id}"]`).style.display="none"
-                focusables = getFocusableElements()
+                focusables = getFocusableElements(modal)
                 firstSlideLastIndex = getChangeSlideIndex()
                 focusables[1].focus()
                 index = 1
@@ -173,7 +207,7 @@ export async function displayModal(allCategories, token) {
             if(status === 204) {
                 event.target.closest('figure').style.display="none"
                 document.querySelector(`.gallery [data-id="${event.target.id}"]`).style.display="none"
-                focusables = getFocusableElements()
+                focusables = getFocusableElements(modal)
                 firstSlideLastIndex = getChangeSlideIndex()
                 focusables[1].focus()
                 index = 1
@@ -187,7 +221,7 @@ export async function displayModal(allCategories, token) {
             modal.querySelector('#fileInput').click();
         }
     });
-
+/*
     // Prévisualisation de la photo choisie
     choosePictureBtn.addEventListener('change', function() {
         const file = this.files[0]
@@ -205,24 +239,79 @@ export async function displayModal(allCategories, token) {
             reader.readAsDataURL(file)
         }
     })
-
+*/
+/*
     // Suppression de la photo sélectionnée
     deleteChosenPicture.addEventListener('click', (event) => {
         event.preventDefault()
         pictureZone.style.backgroundImage="" 
         document.querySelector('.choosePicture').style.display = "flex"
-        errorMessage.innerHTML = ""
+        //errorMessage.innerHTML = ""
         event.target.parentNode.classList.add('hidden')
         focusables = getFocusableElements()
         firstSlideLastIndex = getChangeSlideIndex()
     })
-
+*/
+    // Ecouteur d'évènement sur le champ image
+    choosePictureBtn.addEventListener('change', function(event) {
+        const file = this.files[0]
+        const validTypes=['image/jpeg', 'image/jpg', 'image/png']
+        const maxSize = 4*1024*1024
+        if(file) {
+            try {
+            if(!validTypes.includes(file.type)) {
+                formInputs.file = ""
+                throw new Error('Le format de l\'image n\'est pas valide') 
+            }
+            if(file.size > maxSize) {
+                formInputs.file = ""
+                throw new Error('La taille de l\'image est trop grande') 
+            }
+                errorMessage.innerHTML = ""
+                const reader = new FileReader()
+                reader.onload = function (event) {
+                    modal.querySelector('.default-picture').style.display="none"
+                    modal.querySelector('.imgTypes').style.display="none"
+                    modal.querySelector('.choosePictureLabel').classList.toggle('large')
+                    modal.querySelector('.choosePictureLabel').innerHTML=""
+                    modal.querySelector('.choosePictureLabel').style.backgroundImage=`url(${event.target.result})` 
+                    formInputs.file = file
+                    formInputs.url = event.target.result
+                    checkFormInputs(formInputs)
+                }
+                reader.readAsDataURL(file)
+            } catch(error) {
+                checkFormInputs(formInputs)
+                errorMessage.innerHTML = error.message
+            }
+        }
+    })
     // Ecouteur d'évènement sur le champ titre
+    titleInput.addEventListener('change', function(event){
+        errorMessage.innerHTML = ""
+        const title = event.target.value.trim()
+        try {
+            if(title.length < 5) {
+                formInputs.title = ""
+                throw new Error('Le titre doit comprendre au moins 5 caractères') 
+            }
+            if(!/^[A-Za-zÀ-ÖØ-öø-ÿ .()\-:,']{2,}$/.test(title)) {
+                formInputs.title = ""
+                throw new Error('Le titre doit comprendre des caractères alphanumériques ou certains caractères spéciaux') 
+            }
+            formInputs.title = title
+            checkFormInputs(formInputs)
+        } catch(error) {
+            checkFormInputs(formInputs)
+            errorMessage.innerHTML = error.message
+        }
+     })
+     /*
     titleInput.addEventListener('keyup', function(){
         formInputs.title = titleInput.value
         checkFormInputs(formInputs)
     })
-
+*/
     // Ecouteur d'évènement sur le select
     categoryInput.addEventListener('change', function(){
         formInputs.categoryId = categoryInput.value
@@ -231,8 +320,7 @@ export async function displayModal(allCategories, token) {
 
     // Autorisation de validation du formulaire
     function checkFormInputs(formInputs) {
-        if(formInputs.file && formInputs.title.trim() !== "") {
-            //enableValidateForm(formInputs)
+        if(formInputs.file && formInputs.title && categoryValues.includes(Number(formInputs.categoryId))) {
             btnValidateWork.removeAttribute('disabled')
             btnValidateWork.classList.add('enableValidate')
         } else {
@@ -243,9 +331,17 @@ export async function displayModal(allCategories, token) {
 
     // Réinitialisation du formulaire après saisie
     function reInitForm() {
+        document.querySelector('form').reset()
+        errorMessage.innerHTML = ""
         pictureZone.style.backgroundImage="none" 
-        titleInput.value = ""
-        document.querySelector('.choosePicture').style.display = "flex"
+        //titleInput.value = ""
+        //choosePictureBtn.file=""
+        modal.querySelector('.default-picture').style.display="block"
+        modal.querySelector('.imgTypes').style.display="block"
+        modal.querySelector('.choosePictureLabel').classList.remove('large')
+        modal.querySelector('.choosePictureLabel').innerHTML="+ Ajouter photo"
+        modal.querySelector('.choosePictureLabel').style.backgroundImage=""
+
         // Remise à zéro du formInputs
         formInputs.title = ""
         formInputs.file = ""
@@ -256,7 +352,8 @@ export async function displayModal(allCategories, token) {
 
     async function validateForm(event) {
             event.preventDefault()
-            try {
+            //try {
+            /*
                 // traitement du champ image
                 const validTypes=['image/jpeg', 'image/jpg', 'image/png']
                 const maxSize = 4*1024*1024
@@ -271,16 +368,16 @@ export async function displayModal(allCategories, token) {
                     throw new Error('Le titre doit comprendre au moins 2 caractères') 
                 }
                 if(!/^[A-Za-zÀ-ÖØ-öø-ÿ .()\-:,']{2,}$/.test(formInputs.title)) {
-                    throw new Error('Le titre doit comprendre au moins 2 caractères alphanumériques ou certains caractères spéciaux') 
+                    throw new Error('Le titre doit comprendre au moins 2 caractères') 
                 }
 
                 // Traitement du champ catégorie
                 if(!categoryValues.includes(Number(formInputs.categoryId))) {
                     throw new Error ('le choix de cette catégorie n\'est pas possible')
                 }
-
+            */
                 // suppression des messages d'erreur
-                errorMessage.innerHTML = ""
+                //errorMessage.innerHTML = ""
 
                 const formData = new FormData()
                 formData.append('image', formInputs.file )
@@ -295,19 +392,19 @@ export async function displayModal(allCategories, token) {
                     listFigureId.push(newId)
                     formInputs.id=newId
                     displayNewWork(formInputs)
-                    focusables = getFocusableElements()
+                    focusables = getFocusableElements(modal)
                     firstSlideLastIndex = getChangeSlideIndex()
                     //focusables[1].focus()
                     //index = 1
                     reInitForm()
                     //changeSide()
                 } else {
-                    console.log(requestResult)
+                  console.log(requestResult)
                 }
 
-            } catch(error) {
-                document.querySelector('.errorMessage').innerHTML = `<p>${error.message}</p>`
-            }
+            //} catch(error) {
+            //    document.querySelector('.errorMessage').innerHTML = `<p>${error.message}</p>`
+            //}
     }
 
     function enableValidateForm(formInputs,token, errorMessage) {
@@ -316,6 +413,7 @@ export async function displayModal(allCategories, token) {
     }
 
     enableValidateForm(formInputs,token, errorMessage)
-
+   
 }
+
 
