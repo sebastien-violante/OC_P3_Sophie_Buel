@@ -47,14 +47,13 @@
 						<h2 id="galleryPhotos" class="galleryPhotos">Gallerie photo</h2>
 						<div class="galleryModal"></div>
 						<div class="addBtnZone">
-							<a href="#" class="btnAddPhoto">Ajouter des photos</a>
+							<button href="#" class="btnAddPhoto">Ajouter des photos</button>
 						</div>
 					</div>
 					<div class="right-wrapper">
 						<a href="#" class="toLeftArrow"><img src="./assets/icons/toLeftArrow.png" alt="retour page précédente"></a>
 						<a href="#" class="closeCross" id="2"><img  src="./assets/icons/closeCross.png" alt="fermeture de la modale"></a>
 						<h2 class="addPhotos">Ajout photo</h2>
-						<div class="errorMessage"></div>
 						<form class="form-modal">
 							<div class="pictureZone">
 								<div class="choosePicture">
@@ -66,11 +65,11 @@
 											id="fileInput"
 											class="newPicture" 
 											type="file" 
+											name="file"
 											accept="image/png, image/jpg, image/jpeg"
 											required>
 									<p class="imgTypes">jpg, png : 4mo max</p>
 								</div>
-								<a href="#" class="deleteChosenPicture hidden"><img src="./assets/icons/delete.png"></a>
 							</div>
 							<div class="textualInputs">
 								<label for="title">Titre</label>
@@ -79,6 +78,7 @@
 								<select id="category" name="category"></select>	
 							</div>
 							<div class="addBtnZone">
+								<div class="errorMessage"></div>
 								<button type="submit" class="btnValidateWork" disabled>Valider</button>
 							</div>
 						</form>
