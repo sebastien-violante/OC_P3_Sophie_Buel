@@ -23,7 +23,6 @@ form.querySelector('[type="email"]').addEventListener('change', event => {
             throw new Error('Vous devez saisir un email')           
         }
         if(!/^[\w.-]+@([\w-]+\.)+[a-z]{2,}$/.test(email)) {
-            console.log('faux')
             throw new Error('L\'email saisi n\'a pas un format valide ')
         }
         validationToken.email = email
@@ -51,7 +50,6 @@ form.querySelector('[type="password"]').addEventListener('change', event => {
 // Ecouteur de soumission du formulaire d'authentification
 form.addEventListener('submit', async (event) =>{
     event.preventDefault()
-    console.log(validationToken)
     if(validationToken.email != null && validationToken.password != null) {
         try{
 

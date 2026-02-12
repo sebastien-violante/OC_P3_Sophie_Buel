@@ -32,7 +32,6 @@ export async function tryAuthentication(email, password) {
     if(tryAuthenticateResult.status === 200) {   
         const authenticateResponse = await tryAuthenticateResult.json()
         window.sessionStorage.setItem('token', authenticateResponse.token)
-        //window.sessionStorage.setItem('userId', authenticateResponse.userId)
         
         return  authenticateResponse.token
     }

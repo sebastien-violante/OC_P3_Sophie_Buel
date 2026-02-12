@@ -12,6 +12,7 @@ export async function displayModal(allCategories, token) {
     const btnValidateWork = document.querySelector('.btnValidateWork')
     const categoryValues = Array.from(allCategories).map(category => Number(category.id))
     const choosePictureBtn = document.querySelector('.newPicture')
+    const choosePictureLabel = modal.querySelector('.choosePictureLabel')
     const pictureZone = document.querySelector('.pictureZone')
     const titleInput = document.querySelector('.textualInputs [name="title"]')
     const categoryInput = document.querySelector('.form-modal select[name="category"]')
@@ -21,9 +22,8 @@ export async function displayModal(allCategories, token) {
     let index = focusables.findIndex(element => element === modal.querySelector(':focus'))
 
     // Définition des fonctions
-
     /**
-        * Display the modal and initialize each part
+        * Displays the modal and initialize each part
     */
     function initModal() {
         modal.style.display = "none"
@@ -48,6 +48,107 @@ export async function displayModal(allCategories, token) {
         return changeSlideIndex
     }
 
+    /**
+        * Determines how to deal with the focus index and to change slide
+        * @param {event} - event : the origin of window.addEventListener()
+    */
+    function focusInModal(event) {
+       firstSlideLastIndex = getChangeSlideIndex()
+       event.preventDefault()
+        if(event.shiftKey === true) {
+            index--
+            if(index === firstSlideLastIndex) changeSide()
+        } else {
+            index++ 
+            if(index === firstSlideLastIndex+1) changeSide()
+        }    
+        if(index > focusables.length - 1) {
+            index = 0
+            changeSide()
+        }
+        if(index < 0) {
+            changeSide()
+            index = focusables.length - 1
+        }
+        focusables[index].focus()
+    }
+
+    /**
+        * Determines which slide is visible and invisible
+    */
+    function changeSide() {
+        leftSide.classList.toggle('visible')
+        rightSide.classList.toggle('visible')
+    }
+
+    /**
+        * Change the button bntValidateWOrk attribute to unable or disable it
+        * @param {object} - formInputs : an object with the values of the form inputs
+    */
+    function checkFormInputs(formInputs) {
+        if(formInputs.file && formInputs.title && categoryValues.includes(Number(formInputs.categoryId))) {
+            btnValidateWork.removeAttribute('disabled')
+            btnValidateWork.classList.add('enableValidate')
+        } else {
+            document.querySelector('.btnValidateWork').setAttribute('disabled', true)
+            document.querySelector('.btnValidateWork').classList.remove('enableValidate')
+        }
+    }
+
+    /**
+        * Reinits the form and the formInputs object when the form is submited
+    */
+    function reInitForm() {
+        document.querySelector('form').reset()
+        errorMessage.innerHTML = ""
+        pictureZone.style.backgroundImage="none" 
+        modal.querySelector('.default-picture').style.display="block"
+        modal.querySelector('.imgTypes').style.display="block"
+        choosePictureLabel.classList.remove('large')
+        choosePictureLabel.innerHTML="+ Ajouter photo"
+        choosePictureLabel.style.backgroundImage=""
+
+        // Remise à zéro du formInputs
+        formInputs.title = ""
+        formInputs.file = ""
+        formInputs.url = ""
+        formInputs.id = null
+        checkFormInputs(formInputs)
+    }
+
+    /**
+        * Validates the form according to values stored into the formInputs
+    */
+    async function validateForm(event) {
+            event.preventDefault()
+                const formData = new FormData()
+                formData.append('image', formInputs.file )
+                formData.append('title', formInputs.title)
+                formData.append('category', Number(formInputs.categoryId))
+                
+                const requestResult = await addWork(formData, token)
+                if(requestResult === 201) {
+                    // Attribution d'un nouvel id au travail en fonction des id déjà existants, nécessaire pour le supprimer avant rechargement de la page
+                    let lastWorkId = Number(listFigureId[listFigureId.length-1])
+                    const newId = lastWorkId+1
+                    listFigureId.push(newId)
+                    formInputs.id=newId
+                    displayNewWork(formInputs)
+                    focusables = getFocusableElements(modal)
+                    firstSlideLastIndex = getChangeSlideIndex()
+                    reInitForm()
+                } else {
+                  console.log(requestResult)
+                }
+    }
+
+    /**
+        * Reinits the addEventListener() onto the button btnValidateWork
+    */
+    function enableValidateForm() {
+        btnValidateWork.removeEventListener('click', validateForm)
+        btnValidateWork.addEventListener('click', validateForm)
+    }
 
     // Apparition de la modale si présence de la mention "Modifier"
     if(document.querySelector('.enableModify')) {
@@ -58,12 +159,10 @@ export async function displayModal(allCategories, token) {
         modal.setAttribute('aria-hidden', 'false');
         // Liste des éléments focusables dans la modale
         focusables = getFocusableElements(modal)
-        console.log(focusables)
         // Initialisation du focus à l'intérieur de la modale
         focusables[0].focus()
     })
     }
-
     
     // Ajout des options du select category
     const categoryArray = Array.from(allCategories)
@@ -82,8 +181,6 @@ export async function displayModal(allCategories, token) {
         url: "",
         id: null
     }
-    
-    
         
     // Fermeture de la modale par clic sur la croix
     document.querySelectorAll('.closeCross').forEach(closeCross => {
@@ -104,46 +201,19 @@ export async function displayModal(allCategories, token) {
         }
     })  
 
-    // Méthode de focus trap
-    const focusInModal = function(event) {
-        
-       firstSlideLastIndex = getChangeSlideIndex()
-       event.preventDefault()
-        if(event.shiftKey === true) {
-            index--
-            console.log(index)
-            if(index === firstSlideLastIndex) changeSide()
-        } else {
-            index++ 
-            console.log(index)
-            if(index === firstSlideLastIndex+1) changeSide()
-        }    
-        if(index > focusables.length - 1) {
-            index = 0
-            changeSide()
-        }
-        if(index < 0) {
-            changeSide()
-            index = focusables.length - 1
-        }
-        focusables[index].focus()
-    }
-
     // Changement de côté par appui sur entrée sur le bouton ajout photo
     modal.querySelector('.btnAddPhoto').addEventListener('keydown', (event) => {
         if(event.key === 'Enter' || event.key === ' ') {
             index = firstSlideLastIndex+1
             modal.querySelector('.toLeftArrow').focus()
-            console.log('nouvel index :'+index)
         }
     })
 
     // Changement de côté par appui sur entrée sur la flèche retour
-     modal.querySelector('.toLeftArrow').addEventListener('keydown', (event) => {
+    modal.querySelector('.toLeftArrow').addEventListener('keydown', (event) => {
         if(event.key === 'Enter' || event.key === ' ') {
             index = firstSlideLastIndex
             modal.querySelector('.btnAddPhoto').focus()
-            console.log('nouvel index :'+index)
         }
     })
     
@@ -157,12 +227,6 @@ export async function displayModal(allCategories, token) {
         }
 
     })
-
-    // Changement de partie de la modale
-    function changeSide() {
-        leftSide.classList.toggle('visible')
-        rightSide.classList.toggle('visible')
-    }
 
     // Gestion de l'ouverture de la recherche de fichier avec utilisation clavier sur label
     modal.querySelector('.choosePictureLabel').addEventListener('keydown', (event) => {
@@ -186,7 +250,6 @@ export async function displayModal(allCategories, token) {
 
     // Suppression d'un travail au clic sur une icone poubelle
     modal.addEventListener('click', async (event)=>{
-        
         if(event.target.parentNode.classList.contains("deleteIcon")) {
             event.preventDefault()
             const status = await deleteWork(event.target.parentNode.id, token)
@@ -200,6 +263,7 @@ export async function displayModal(allCategories, token) {
             }
         }
     })
+
     // Suppression d'un travail au clavier (attention : target = image)
     modal.addEventListener('keydown', async (event)=>{
         if(event.key === "Enter" && event.target.classList.contains("deleteIcon")) {
@@ -221,37 +285,7 @@ export async function displayModal(allCategories, token) {
             modal.querySelector('#fileInput').click();
         }
     });
-/*
-    // Prévisualisation de la photo choisie
-    choosePictureBtn.addEventListener('change', function() {
-        const file = this.files[0]
-        if(file) {
-            const reader = new FileReader()
-            reader.onload = function (event) {
-                document.querySelector('.choosePicture').style.display = "none"
-                pictureZone.style.backgroundImage=`url(${event.target.result})` 
-                deleteChosenPicture.classList.remove('hidden')
-                formInputs.file = file
-                formInputs.url = event.target.result
-                checkFormInputs(formInputs)
 
-            }
-            reader.readAsDataURL(file)
-        }
-    })
-*/
-/*
-    // Suppression de la photo sélectionnée
-    deleteChosenPicture.addEventListener('click', (event) => {
-        event.preventDefault()
-        pictureZone.style.backgroundImage="" 
-        document.querySelector('.choosePicture').style.display = "flex"
-        //errorMessage.innerHTML = ""
-        event.target.parentNode.classList.add('hidden')
-        focusables = getFocusableElements()
-        firstSlideLastIndex = getChangeSlideIndex()
-    })
-*/
     // Ecouteur d'évènement sur le champ image
     choosePictureBtn.addEventListener('change', function(event) {
         const file = this.files[0]
@@ -286,6 +320,7 @@ export async function displayModal(allCategories, token) {
             }
         }
     })
+
     // Ecouteur d'évènement sur le champ titre
     titleInput.addEventListener('change', function(event){
         errorMessage.innerHTML = ""
@@ -306,113 +341,14 @@ export async function displayModal(allCategories, token) {
             errorMessage.innerHTML = error.message
         }
      })
-     /*
-    titleInput.addEventListener('keyup', function(){
-        formInputs.title = titleInput.value
-        checkFormInputs(formInputs)
-    })
-*/
+     
     // Ecouteur d'évènement sur le select
     categoryInput.addEventListener('change', function(){
         formInputs.categoryId = categoryInput.value
         checkFormInputs(formInputs)
     })
 
-    // Autorisation de validation du formulaire
-    function checkFormInputs(formInputs) {
-        if(formInputs.file && formInputs.title && categoryValues.includes(Number(formInputs.categoryId))) {
-            btnValidateWork.removeAttribute('disabled')
-            btnValidateWork.classList.add('enableValidate')
-        } else {
-            document.querySelector('.btnValidateWork').setAttribute('disabled', true)
-            document.querySelector('.btnValidateWork').classList.remove('enableValidate')
-        }
-    }
-
-    // Réinitialisation du formulaire après saisie
-    function reInitForm() {
-        document.querySelector('form').reset()
-        errorMessage.innerHTML = ""
-        pictureZone.style.backgroundImage="none" 
-        //titleInput.value = ""
-        //choosePictureBtn.file=""
-        modal.querySelector('.default-picture').style.display="block"
-        modal.querySelector('.imgTypes').style.display="block"
-        modal.querySelector('.choosePictureLabel').classList.remove('large')
-        modal.querySelector('.choosePictureLabel').innerHTML="+ Ajouter photo"
-        modal.querySelector('.choosePictureLabel').style.backgroundImage=""
-
-        // Remise à zéro du formInputs
-        formInputs.title = ""
-        formInputs.file = ""
-        formInputs.url = ""
-        formInputs.id = null
-        checkFormInputs(formInputs)
-    }
-
-    async function validateForm(event) {
-            event.preventDefault()
-            //try {
-            /*
-                // traitement du champ image
-                const validTypes=['image/jpeg', 'image/jpg', 'image/png']
-                const maxSize = 4*1024*1024
-                if(!validTypes.includes(formInputs.file.type)) {
-                    throw new Error('Le format de l\'image n\'est pas valide') 
-                }
-                if(formInputs.file.size > maxSize) {
-                    throw new Error('La taille de l\'image est trop grande') 
-                }
-                // Traitement du champ titre
-                if(formInputs.title.length<2) {
-                    throw new Error('Le titre doit comprendre au moins 2 caractères') 
-                }
-                if(!/^[A-Za-zÀ-ÖØ-öø-ÿ .()\-:,']{2,}$/.test(formInputs.title)) {
-                    throw new Error('Le titre doit comprendre au moins 2 caractères') 
-                }
-
-                // Traitement du champ catégorie
-                if(!categoryValues.includes(Number(formInputs.categoryId))) {
-                    throw new Error ('le choix de cette catégorie n\'est pas possible')
-                }
-            */
-                // suppression des messages d'erreur
-                //errorMessage.innerHTML = ""
-
-                const formData = new FormData()
-                formData.append('image', formInputs.file )
-                formData.append('title', formInputs.title)
-                formData.append('category', Number(formInputs.categoryId))
-                
-                const requestResult = await addWork(formData, token)
-                if(requestResult === 201) {
-                    // Attribution d'un nouvel id au travail en fonction des id déjà existants
-                    let lastWorkId = Number(listFigureId[listFigureId.length-1])
-                    const newId = lastWorkId+1
-                    listFigureId.push(newId)
-                    formInputs.id=newId
-                    displayNewWork(formInputs)
-                    focusables = getFocusableElements(modal)
-                    firstSlideLastIndex = getChangeSlideIndex()
-                    //focusables[1].focus()
-                    //index = 1
-                    reInitForm()
-                    //changeSide()
-                } else {
-                  console.log(requestResult)
-                }
-
-            //} catch(error) {
-            //    document.querySelector('.errorMessage').innerHTML = `<p>${error.message}</p>`
-            //}
-    }
-
-    function enableValidateForm(formInputs,token, errorMessage) {
-        btnValidateWork.removeEventListener('click', validateForm)
-        btnValidateWork.addEventListener('click', validateForm)
-    }
-
-    enableValidateForm(formInputs,token, errorMessage)
+    enableValidateForm()
    
 }
 

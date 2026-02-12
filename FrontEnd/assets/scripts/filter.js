@@ -13,7 +13,7 @@ export async function getAllCategories() {
         }
         const allCategories = await responseAllCategories.json()
 
-        // Create a set instance to avoid redundant values
+        // Creates a set instance to avoid redundant values
         const setAllCategories = new Set
         allCategories.forEach(category => { 
             setAllCategories.add(category)
@@ -27,24 +27,9 @@ export async function getAllCategories() {
 }
 
 /**
- * Récupère les catégories à l'aide de l'API et les affiche
- * @param {number} id - l'id de la catégorie à afficher
- * @param {object} works - l'ensemble des travaux avant filtrage
- 
-export function displayCategories() {
-    // Crée un bouton par défaut permettant avec l'id = 0 d'afficher tous les travaux sans filtrage
-    document.querySelector('.filters').innerHTML = '<button class="filter-btn" data-id="0">Tous</button>'
-    const categories = getAllCategories()
-    categories.forEach(category => {
-        const categoryHtml = `<button class="filter-btn" data-id="${category.id}">${category.name}</button>`
-        document.querySelector('.filters').innerHTML += categoryHtml
-    })
-}
-*/
-/**
- * Filtre les travaux en fonction de l'id d'une catégorie et appelle leur affichage
- * @param {number} id - l'id de la catégorie à afficher
- * @param {object} works - l'ensemble des travaux avant filtrage
+ * Filters the works according to a category id
+ * @param {number} id - the category id to display
+ * @param {object} works - the whole works coming from the API
  */
 export function filterWorksByCategory(id, works) {
     if(id === 0) {
@@ -56,8 +41,8 @@ export function filterWorksByCategory(id, works) {
 }
 
 /**
- * Met en évidence le bouton correspondant au filtre appliqué
- * @param {number} id - l'id de la catégorie à afficher
+ * Underlignes the filter button corresponding to the chosen category
+ * @param {number} id - the id of the category to display
  */
 export function showSelectedFilter(id) {
     document.querySelectorAll('.filter-btn').forEach(button => {
