@@ -54,21 +54,28 @@ export async function displayModal(allCategories, token) {
     */
     function focusInModal(event) {
        firstSlideLastIndex = getChangeSlideIndex()
+       console.log(firstSlideLastIndex)
        event.preventDefault()
         if(event.shiftKey === true) {
+            // go back
             index--
-            if(index === firstSlideLastIndex) changeSide()
+            console.log(index)
+            if(index === firstSlideLastIndex) {
+                index = focusables.length - 1
+            }
+            if(index < 0) {
+                index = firstSlideLastIndex
+            }
         } else {
+            // go forwards
             index++ 
-            if(index === firstSlideLastIndex+1) changeSide()
-        }    
-        if(index > focusables.length - 1) {
-            index = 0
-            changeSide()
-        }
-        if(index < 0) {
-            changeSide()
-            index = focusables.length - 1
+            console.log(index)
+            if(index === firstSlideLastIndex+1) {
+                index = 0
+            } 
+            if(index > focusables.length - 1) {
+                index = firstSlideLastIndex+1
+            }
         }
         focusables[index].focus()
     }
@@ -212,8 +219,8 @@ export async function displayModal(allCategories, token) {
     // Changement de côté par appui sur entrée sur la flèche retour
     modal.querySelector('.toLeftArrow').addEventListener('keydown', (event) => {
         if(event.key === 'Enter' || event.key === ' ') {
-            index = firstSlideLastIndex
-            modal.querySelector('.btnAddPhoto').focus()
+            index = 0
+           focusables[0].focus()
         }
     })
     
