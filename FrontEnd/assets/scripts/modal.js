@@ -274,6 +274,7 @@ export async function displayModal(allCategories, token) {
     // Suppression d'un travail au clavier (attention : target = image)
     modal.addEventListener('keydown', async (event)=>{
         if(event.key === "Enter" && event.target.classList.contains("deleteIcon")) {
+            event.preventDefault()
             const status = await deleteWork(event.target.id, token)
             if(status === 204) {
                 event.target.closest('figure').style.display="none"
@@ -329,7 +330,7 @@ export async function displayModal(allCategories, token) {
     })
 
     // Ecouteur d'évènement sur le champ titre
-    titleInput.addEventListener('change', function(event){
+    titleInput.addEventListener('keyup', function(event){
         errorMessage.innerHTML = ""
         const title = event.target.value.trim()
         try {
