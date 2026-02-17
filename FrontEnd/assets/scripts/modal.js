@@ -1,4 +1,4 @@
-import { deleteWork, addWork } from "./utils/requests.js"
+import { deleteWork, addWork, getData } from "./utils/requests.js"
 import { displayNewWork } from "./utils/display.js"
 import { getFocusableElements } from "./utils/focusTrap.js"
 
@@ -135,10 +135,9 @@ export async function displayModal(allCategories, token) {
                 
                 const requestResult = await addWork(formData, token)
                 if(requestResult === 201) {
-                    // Attribution d'un nouvel id au travail en fonction des id déjà existants, nécessaire pour le supprimer avant rechargement de la page
-                    let lastWorkId = Number(listFigureId[listFigureId.length-1])
-                    const newId = lastWorkId+1
-                    listFigureId.push(newId)
+                    // envoi d'une requête pour récupérer le dernier id de travail de la base
+                    const works = await getData('works')
+                    const newId=works[works.length -1].id
                     formInputs.id=newId
                     displayNewWork(formInputs)
                     focusables = getFocusableElements(modal)
@@ -259,7 +258,9 @@ export async function displayModal(allCategories, token) {
     modal.addEventListener('click', async (event)=>{
         if(event.target.parentNode.classList.contains("deleteIcon")) {
             event.preventDefault()
+            console.log(event.target.parentNode.id, token)
             const status = await deleteWork(event.target.parentNode.id, token)
+            console.log(status)
             if(status === 204) {
                 event.target.closest('figure').style.display="none"
                 document.querySelector(`.gallery [data-id="${event.target.parentNode.id}"]`).style.display="none"
@@ -275,7 +276,9 @@ export async function displayModal(allCategories, token) {
     modal.addEventListener('keydown', async (event)=>{
         if(event.key === "Enter" && event.target.classList.contains("deleteIcon")) {
             event.preventDefault()
+            console.log(event.target.id)
             const status = await deleteWork(event.target.id, token)
+            console.log(status)
             if(status === 204) {
                 event.target.closest('figure').style.display="none"
                 document.querySelector(`.gallery [data-id="${event.target.id}"]`).style.display="none"
