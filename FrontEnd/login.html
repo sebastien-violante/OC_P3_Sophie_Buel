@@ -10,6 +10,7 @@
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
 	<script src="./assets/scripts/authentication.js" type="module"></script>
+
 </head>
 <body>
 <header>
@@ -20,7 +21,7 @@
 			<ul>
 				<li><a href="./index.html">projets</a></li>
 				<li><a href="./index.html#contact">contact</a></li>
-				<li class="loginLogout"></li>
+				<li class="loginLogout"><a href='login.html'>Login</a></li>
 				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 			</ul>
 		</nav>
@@ -32,9 +33,9 @@
 		
 		<form>
 			<label for="email">E-mail</label><span class="login-error-email"></span>
-			<input type="email" id="email" name="email" required>
+			<input type="email" id="email" name="email" value="sophie.bluel@test.tld" required>
 			<label for="password">Mot de passe</label>
-			<input type="password" id="password" name="password" required>
+			<input type="password" id="password" name="password" value="S0phie" required>
 			<div class="errorMessage"></div>
 			<button type="submit">Se connecter</button>
 		</form>

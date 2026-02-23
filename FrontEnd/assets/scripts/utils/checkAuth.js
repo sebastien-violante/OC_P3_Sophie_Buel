@@ -12,5 +12,5 @@ export function checkAuth() {
  */
 export function logout() {
     window.sessionStorage.removeItem('token')
-    document.querySelector('header-banner').classList.toggle('connected')
+    document.querySelector('.header-banner').classList.toggle('connected')
 }

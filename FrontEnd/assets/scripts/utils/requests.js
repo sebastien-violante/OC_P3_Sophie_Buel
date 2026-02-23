@@ -65,5 +65,5 @@ export async function addWork(formData, token) {
         headers: {'Authorization': `Bearer ${token}`},
         body: formData
         })
-    return requestResult.status
+    return requestResult
 }

@@ -134,11 +134,11 @@ export async function displayModal(allCategories, token) {
                 formData.append('category', Number(formInputs.categoryId))
                 
                 const requestResult = await addWork(formData, token)
-                if(requestResult === 201) {
-                    // envoi d'une requête pour récupérer le dernier id de travail de la base
-                    const works = await getData('works')
-                    const newId=works[works.length -1].id
-                    formInputs.id=newId
+                if(requestResult.status === 201) {
+                    const requestBackData = await requestResult.json()
+                    formInputs.id=requestBackData.id
+                    formInputs.title = requestBackData.title
+                    formInputs.url = requestBackData.imageUrl
                     displayNewWork(formInputs)
                     focusables = getFocusableElements(modal)
                     firstSlideLastIndex = getChangeSlideIndex()
@@ -210,6 +210,7 @@ export async function displayModal(allCategories, token) {
     // Changement de côté par appui sur entrée sur le bouton ajout photo
     modal.querySelector('.btnAddPhoto').addEventListener('keydown', (event) => {
         if(event.key === 'Enter' || event.key === ' ') {
+            errorMessage.innerHTML = ""
             index = firstSlideLastIndex+1
             modal.querySelector('.toLeftArrow').focus()
         }
@@ -218,9 +219,10 @@ export async function displayModal(allCategories, token) {
     // Changement de côté par appui sur entrée sur la flèche retour
     modal.querySelector('.toLeftArrow').addEventListener('keydown', (event) => {
         if(event.key === 'Enter' || event.key === ' ') {
+            errorMessage.innerHTML = ""
             index = 0
-           focusables[0].focus()
-        }
+            focusables[0].focus()
+        }   
     })
     
     // Fermeture de la modale par touche ESCAPE et gestion du focus trap
@@ -299,6 +301,7 @@ export async function displayModal(allCategories, token) {
 
     // Ecouteur d'évènement sur le champ image
     choosePictureBtn.addEventListener('change', function(event) {
+        console.log(event.target.files[0])
         const file = this.files[0]
         const validTypes=['image/jpeg', 'image/jpg', 'image/png']
         const maxSize = 4*1024*1024
@@ -317,7 +320,7 @@ export async function displayModal(allCategories, token) {
                 reader.onload = function (event) {
                     modal.querySelector('.default-picture').style.display="none"
                     modal.querySelector('.imgTypes').style.display="none"
-                    modal.querySelector('.choosePictureLabel').classList.toggle('large')
+                    if(!modal.querySelector('.choosePictureLabel').classList.contains('large')) modal.querySelector('.choosePictureLabel').classList.add('large')
                     modal.querySelector('.choosePictureLabel').innerHTML=""
                     modal.querySelector('.choosePictureLabel').style.backgroundImage=`url(${event.target.result})` 
                     formInputs.file = file
