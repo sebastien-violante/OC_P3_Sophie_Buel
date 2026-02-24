@@ -54,12 +54,10 @@ export async function displayModal(allCategories, token) {
     */
     function focusInModal(event) {
        firstSlideLastIndex = getChangeSlideIndex()
-       console.log(firstSlideLastIndex)
        event.preventDefault()
         if(event.shiftKey === true) {
             // go back
             index--
-            console.log(index)
             if(index === firstSlideLastIndex) {
                 index = focusables.length - 1
             }
@@ -69,7 +67,6 @@ export async function displayModal(allCategories, token) {
         } else {
             // go forwards
             index++ 
-            console.log(index)
             if(index === firstSlideLastIndex+1) {
                 index = 0
             } 
@@ -260,9 +257,7 @@ export async function displayModal(allCategories, token) {
     modal.addEventListener('click', async (event)=>{
         if(event.target.parentNode.classList.contains("deleteIcon")) {
             event.preventDefault()
-            console.log(event.target.parentNode.id, token)
             const status = await deleteWork(event.target.parentNode.id, token)
-            console.log(status)
             if(status === 204) {
                 event.target.closest('figure').style.display="none"
                 document.querySelector(`.gallery [data-id="${event.target.parentNode.id}"]`).style.display="none"
@@ -278,9 +273,7 @@ export async function displayModal(allCategories, token) {
     modal.addEventListener('keydown', async (event)=>{
         if(event.key === "Enter" && event.target.classList.contains("deleteIcon")) {
             event.preventDefault()
-            console.log(event.target.id)
             const status = await deleteWork(event.target.id, token)
-            console.log(status)
             if(status === 204) {
                 event.target.closest('figure').style.display="none"
                 document.querySelector(`.gallery [data-id="${event.target.id}"]`).style.display="none"
@@ -301,7 +294,6 @@ export async function displayModal(allCategories, token) {
 
     // Ecouteur d'évènement sur le champ image
     choosePictureBtn.addEventListener('change', function(event) {
-        console.log(event.target.files[0])
         const file = this.files[0]
         const validTypes=['image/jpeg', 'image/jpg', 'image/png']
         const maxSize = 4*1024*1024

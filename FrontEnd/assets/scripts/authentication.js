@@ -12,16 +12,20 @@ let validationToken = {
 }
 
 // Recherche et test de données préremplies dans le formulaire
-validateInput(form.querySelector('[type="email"]').value.trim(), 'email')
-validateInput(form.querySelector('[type="password"]').value.trim(), 'password')
+const initialEmail = form.querySelector('[type="email"]').value.trim()
+const initialPassword = form.querySelector('[type="password"]').value.trim()
+if(initialEmail) {
+    validateInput(initialEmail, 'email')
+}
+if(initialPassword) {
+    validateInput(initialPassword, 'password')
+}
 
 function validateInput(value, type) {
     switch(type) {
         case "password" :
-            console.log(value)
             try{
                 if(value === "" || value.length<6) {
-                    console.log('pas bon')
                     throw new Error('Vous devez saisir un mot de passe d\'au moins 6 caractères')
                 }
                 validationToken.password = value
@@ -57,7 +61,6 @@ form.querySelector('[type="email"]').addEventListener('change', event => {
 
 // Ecouteur de changement sur le champ password
 form.querySelector('[type="password"]').addEventListener('keyup', event => {
-    console.log('je teste le pwd')
     errorMessage.innerHTML = ""
     validateInput(event.target.value.trim(), 'password')
 })
