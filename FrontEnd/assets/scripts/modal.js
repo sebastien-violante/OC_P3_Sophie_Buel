@@ -217,6 +217,7 @@ export async function displayModal(allCategories, token) {
     modal.querySelector('.toLeftArrow').addEventListener('keydown', (event) => {
         if(event.key === 'Enter' || event.key === ' ') {
             errorMessage.innerHTML = ""
+            reInitForm()
             index = 0
             focusables[0].focus()
         }   
@@ -244,6 +245,7 @@ export async function displayModal(allCategories, token) {
     // Affichage de la première partie de la modale
     modal.querySelector('.toLeftArrow').addEventListener('click', (event) => {
         event.preventDefault()
+        reInitForm()
         changeSide()
     })
 
