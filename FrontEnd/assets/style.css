@@ -242,6 +242,7 @@ footer nav ul li {
 }
 #portfolio .gallery figure img {
 	min-height: 404px;
+	object-fit: cover;
 }
 
 /******************************* FILTERS SECTION */
@@ -444,6 +445,7 @@ footer nav ul li {
 	width: 76px;
 	height: 103px;
 	margin-bottom: 19px;
+	object-fit: cover;
 }
 .modal-wrapper .galleryModal .deleteIcon {
 	position: absolute;

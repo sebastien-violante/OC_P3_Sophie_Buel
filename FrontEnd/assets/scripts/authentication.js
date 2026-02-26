@@ -71,7 +71,7 @@ form.addEventListener('submit', async (event) =>{
     if(validationToken.isValidEmail && validationToken.isValidPassword) {
         try{
 
-            const token = await tryAuthentication(validationToken.email || form.email.value.trim(), validationToken.password || form.password.value.trim())
+            const token = await tryAuthentication(validationToken.email , validationToken.password )
             if(token) {
                 window.location.href=('index.html')
             } else {
